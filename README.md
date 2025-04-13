@@ -14,7 +14,7 @@ A web application that accelerates learning through AI-generated flashcards and 
 - **Manual Flashcard Creation**: Create custom flashcards directly
 - **User Authentication**: Secure email/password registration and login
 - **Flashcard Management**: Browse, edit, and delete your flashcards
-- **Statistics**: Track your learning progress
+- **Statistics**: Check your flashcard creation statistics
 - **Spaced Repetition Learning**: Study flashcards using effective learning algorithms
 
 ## Tech Stack
@@ -69,7 +69,7 @@ nvm use 22.14.0
 ### Installation
 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/10x-flashcards.git
+git clone https://github.com/Arthez/10x-flashcards.git
 cd 10x-flashcards
 ```
 
@@ -130,10 +130,6 @@ The project is currently in early development (version 0.0.1). We are working on
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
----
-
-Created by Artur Ratowski
 
 ## Project Structure
 
