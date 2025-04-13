@@ -88,7 +88,7 @@
 - Opis: Zalogowany użytkownik ma możliwość wylosowania własnej fiszki za pomocą gotowego algorytmu (spaced repetition), oraz odwrócenia fiszki.
 - Kryteria akceptacji:
    - Widok possada przycisk "Draw flashcard", wciśniecie tego przycisku powoduje wylosowanie fiszki i wyświetlenie fiszki pokazując jej tekst z przodu fiszki.
-   - Gdy fiszka jest wyświetlona, przycisk "Turn around" jest dostępny, który zmienia treść przodu fiszki na tył lub tył na przód (toggle).
+   - Gdy fiszka jest wyświetlona, przycisk "Flip card" jest dostępny, który zmienia treść przodu fiszki na tył lub tył na przód (toggle).
    - Uczenie się za pomocą fiszek odbywa się na dedykowanym widoku do nauki fiszek, na który można wejść z nawigacji paska górnego z labelką "Learn".
 
 
