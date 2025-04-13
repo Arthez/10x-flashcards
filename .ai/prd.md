@@ -68,8 +68,8 @@
 - Opis: Użytkownik przegląda swoje fiszki, filtrując je według metody dodania (AI vs manual) oraz sortując po dacie, a następnie dokonuje edycji lub usunięcia pojedynczych fiszek.
 - Kryteria akceptacji:
    - Użytkownik widzi listę własnych fiszek jako kafelki z treścią przodu i tyłu fiszki w trybie tylko do odczytu.
-   - Istnieje możliwość filtrowania fiszek według sposobu dodania.
-   - Fiszki można sortować po dacie (timestamp), od najstarszych lub od najnowszych (toggle).
+   - Istnieje możliwość filtrowania fiszek według sposobu dodania - filtrowanie frontendowe.
+   - Fiszki można sortować po dacie (timestamp), od najstarszych lub od najnowszych (toggle) - sortowanie frontendowe.
    - Operacja usunięcią odbywa się za pomocą przycisku na kafelku fiszki z labelką "Remove".
    - Operacja edycji odbywa się za pomocą przycisku na kafelku fiszki z labelką "Edit", wtedy treści stają się edytowalne (wyłącza się tryb tylko do odczytu), a przycisk "Edit" znika pojawia się przycisk "Save", który zapisuje treść fiszki w bazie danych.
    - Operacje edycji i usuwania wymagają potwierdzenia przed wykonaniem za pomocą modalu potwierdzającego.
