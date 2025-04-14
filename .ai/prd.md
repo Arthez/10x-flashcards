@@ -46,7 +46,7 @@
 - Opis: Użytkownik wprowadza treść fiszki ręcznie, która zostaje zapisana w systemie.
 - Kryteria akceptacji:
    - Użytkownik może wpisać treść fiszki dla przodu i tyłu fiszki.
-   - Treść każdego pola nie może być pusta, aby zapisać fiszkę (walidacja z wiadomością błędu).
+   - Tekst tyłu i przodu fiszki ma mieć minimum 2 znaki, do 200 znaków, aby zapisać fiszkę (walidacja z wiadomością błędu).
    - Fiszka jest zapisywana w bazie danych z odpowiednim timestampem dla zalogowanego użytkownika.
    - System potwierdza zapis fiszki oraz czyści pola do ponownego dodania fiszki manualnej.
    - Manualne dodawanie odbywa się na dedykowanym widoku do manualnego dodawania fiszek, na który można wejść z nawigacji paska górnego z labelką "Add".
@@ -57,6 +57,7 @@
 - Kryteria akceptacji:
    - Po wprowadzeniu tekstu, który musi posiadać co najmniej 1000 znaków i nie może przekroczyć 10000 znaków, system generuje propozycje przodu i tyłu pięciu fiszek poprzez AI.
    - Użytkownik widzi propozycje fiszek wygenerowanych przez AI, jako kafelki z propozycjami tyłu i przodu fiszki, znajdujące się pod polem na wpisywanie tekstu do wygenerowania fiszek.
+   - Tekst tyłu i przodu fiszki ma mieć minimum 2 znaki, do 200 znaków
    - Propozycje są przedstawione z możliwością akceptacji (naciskając przycisk "Accept" na kafelku fiszki) lub odrzucenia (naciskając przycisk "Reject" na fiszce).
    - Po akceptacji przez użytkownika wygenerowanej fiszki, fiszka jest zapisywana w bazie danych z odpowiednim timestampem dla zalogowanego użytkownika.
    - System potwierdza zapis fiszki.
@@ -87,7 +88,7 @@
 - Tytuł: Użytkownik uczy się przy pomocy własnych fiszek
 - Opis: Zalogowany użytkownik ma możliwość wylosowania własnej fiszki za pomocą gotowego algorytmu (spaced repetition), oraz odwrócenia fiszki.
 - Kryteria akceptacji:
-   - Widok possada przycisk "Draw flashcard", wciśniecie tego przycisku powoduje wylosowanie fiszki i wyświetlenie fiszki pokazując jej tekst z przodu fiszki.
+   - Widok posiada przycisk "Draw flashcard", wciśniecie tego przycisku powoduje wylosowanie fiszki i wyświetlenie fiszki pokazując jej tekst z przodu fiszki.
    - Gdy fiszka jest wyświetlona, przycisk "Flip card" jest dostępny, który zmienia treść przodu fiszki na tył lub tył na przód (toggle).
    - Uczenie się za pomocą fiszek odbywa się na dedykowanym widoku do nauki fiszek, na który można wejść z nawigacji paska górnego z labelką "Learn".
 
