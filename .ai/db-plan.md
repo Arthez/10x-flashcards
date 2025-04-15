@@ -33,6 +33,7 @@
 | accepted_edited | integer | NOT NULL, DEFAULT 0 | Number of accepted flashcards with edits |
 | generation_time_ms | integer | NOT NULL | Time taken to generate the flashcards in milliseconds |
 | ai_model | text | NOT NULL | Name of the AI model used for generation |
+| error | text | NULL | Potential error message returned from the AI platform |
 | created_at | timestamp with time zone | NOT NULL, DEFAULT now() | When the generation was performed |
 | updated_at | timestamp with time zone | NOT NULL, DEFAULT now() | When the generation record was last updated |
 
