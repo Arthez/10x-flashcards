@@ -11,6 +11,11 @@ export type FlashcardDTO = Pick<
 >;
 
 /**
+ * Creation method enum
+ */
+export type CreationMethod = Database["public"]["Enums"]["creation_method_enum"];
+
+/**
  * Response format for flashcards list endpoint
  */
 export interface FlashcardsResponseDTO {
@@ -20,11 +25,20 @@ export interface FlashcardsResponseDTO {
 /**
  * Command model for creating a new flashcard
  */
-export interface CreateFlashcardCommand {
+export interface CreateManualFlashcardCommand {
   front_content: string; // 2-200 characters
   back_content: string; // 2-200 characters
-  creation_method: Database["public"]["Enums"]["creation_method_enum"];
-  generation_id?: string; // Optional, required only when accepting AI generated flashcard
+  creation_method: Extract<CreationMethod, "manual">;
+}
+
+/**
+ * Command model specifically for accepting AI generated flashcards
+ */
+export interface AcceptAIFlashcardCommand {
+  front_content: string; // 2-200 characters
+  back_content: string; // 2-200 characters
+  creation_method: Extract<CreationMethod, "ai_full" | "ai_edited">;
+  generation_id: string; // Required for AI generated flashcards
 }
 
 /**
