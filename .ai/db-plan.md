@@ -18,24 +18,28 @@
 | id | uuid | PRIMARY KEY, DEFAULT uuid_generate_v4() | Unique identifier for the flashcard |
 | front_content | text | NOT NULL, CHECK (length(front_content) >= 2 AND length(front_content) <= 200) | Content of the front side |
 | back_content | text | NOT NULL, CHECK (length(back_content) >= 2 AND length(back_content) <= 200) | Content of the back side |
-| creation_method | creation_method_enum | NOT NULL | How the flashcard was created (AI or manually) |
+| creation_method | creation_method_enum | NOT NULL | How the flashcard was created (AI_full, AI_edited or manually) |
 | created_at | timestamp with time zone | NOT NULL, DEFAULT now() | When the flashcard was created |
 | updated_at | timestamp with time zone | NOT NULL, DEFAULT now() | When the flashcard was last updated |
 | user_id | uuid | NOT NULL, REFERENCES users(id) ON DELETE CASCADE | Owner of the flashcard |
 
-### user_actions
+### generations
 | Column | Type | Constraints | Description |
 |--------|------|-------------|-------------|
-| id | uuid | PRIMARY KEY, DEFAULT uuid_generate_v4() | Unique identifier for the action |
-| action_type | action_type_enum | NOT NULL | Type of action performed |
-| created_at | timestamp with time zone | NOT NULL, DEFAULT now() | When the action was performed |
-| user_id | uuid | NOT NULL, REFERENCES users(id) ON DELETE CASCADE | User who performed the action |
+| id | uuid | PRIMARY KEY, DEFAULT uuid_generate_v4() | Unique identifier for the generation |
+| user_id | uuid | NOT NULL, REFERENCES users(id) ON DELETE CASCADE | User who generated the flashcards |
+| total_generated | integer | NOT NULL | Number of flashcards generated in this session |
+| accepted_full | integer | NOT NULL, DEFAULT 0 | Number of accepted flashcards without edits |
+| accepted_edited | integer | NOT NULL, DEFAULT 0 | Number of accepted flashcards with edits |
+| generation_time_ms | integer | NOT NULL | Time taken to generate the flashcards in milliseconds |
+| ai_model | text | NOT NULL | Name of the AI model used for generation |
+| created_at | timestamp with time zone | NOT NULL, DEFAULT now() | When the generation was performed |
+| updated_at | timestamp with time zone | NOT NULL, DEFAULT now() | When the generation record was last updated |
 
 ## 2. Custom Types
 
 ```sql
-CREATE TYPE creation_method_enum AS ENUM ('ai', 'manual');
-CREATE TYPE action_type_enum AS ENUM ('manual_create', 'ai_accept', 'ai_reject');
+CREATE TYPE creation_method_enum AS ENUM ('AI_full', 'AI_edited', 'manual');
 ```
 
 ## 3. Indexes
@@ -46,9 +50,9 @@ CREATE INDEX idx_flashcards_user_id ON flashcards(user_id);
 CREATE INDEX idx_flashcards_created_at ON flashcards(created_at);
 CREATE INDEX idx_flashcards_creation_method ON flashcards(creation_method);
 
--- Indexes for user_actions table
-CREATE INDEX idx_user_actions_user_id ON user_actions(user_id);
-CREATE INDEX idx_user_actions_action_type ON user_actions(action_type);
+-- Indexes for generations table
+CREATE INDEX idx_generations_user_id ON generations(user_id);
+CREATE INDEX idx_generations_created_at ON generations(created_at);
 ```
 
 ## 4. Row Level Security (RLS) Policies
@@ -62,11 +66,11 @@ CREATE POLICY flashcards_user_isolation ON flashcards
     USING (user_id = auth.uid())
     WITH CHECK (user_id = auth.uid());
 
--- Enable RLS on user_actions table
-ALTER TABLE user_actions ENABLE ROW LEVEL SECURITY;
+-- Enable RLS on generations table
+ALTER TABLE generations ENABLE ROW LEVEL SECURITY;
 
--- Policy to ensure users can only see their own actions
-CREATE POLICY user_actions_user_isolation ON user_actions
+-- Policy to ensure users can only see their own generations
+CREATE POLICY generations_user_isolation ON generations
     USING (user_id = auth.uid())
     WITH CHECK (user_id = auth.uid());
 ```
@@ -87,12 +91,17 @@ CREATE TRIGGER update_flashcards_updated_at
 BEFORE UPDATE ON flashcards
 FOR EACH ROW
 EXECUTE FUNCTION update_modified_column();
+
+CREATE TRIGGER update_generations_updated_at
+BEFORE UPDATE ON generations
+FOR EACH ROW
+EXECUTE FUNCTION update_modified_column();
 ```
 
 ## 6. Relationships
 
 - One-to-Many: `users` to `flashcards` (One user can have many flashcards)
-- One-to-Many: `users` to `user_actions` (One user can perform many actions)
+- One-to-Many: `users` to `generations` (One user can have many generation sessions)
 
 ## 7. Notes
 
@@ -101,4 +110,5 @@ EXECUTE FUNCTION update_modified_column();
 3. RLS policies ensure data security by restricting access to user-specific data.
 4. Spaced repetition algorithm will be implemented on the frontend.
 5. All timestamps use time zones to ensure global accessibility.
-6. Content validations are implemented using CHECK constraints to ensure data quality. 
+6. Content validations are implemented using CHECK constraints to ensure data quality.
+7. The generations table tracks AI generations and acceptance rates to calculate metrics. 

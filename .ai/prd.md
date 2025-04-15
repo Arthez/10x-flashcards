@@ -10,12 +10,12 @@
 
 ## 3. Wymagania funkcjonalne
 - Generowanie fiszek przez AI: Użytkownik wprowadza tekst, na podstawie którego AI generuje propozycje fiszek (przodu i tyłu fiszki).
-- Akceptacja lub odrzucenie fiszek generowanych przez AI: Użytkownik decyduje, czy propozycja fiszki zostanie zapisana czy odrzucona.
+- Akceptacja lub odrzucenie fiszek generowanych przez AI: Użytkownik decyduje, czy propozycja fiszki zostanie zaakceptowana (zapisana) czy odrzucona. Zaakceptowane fiszki mogą być zapisane bez edycji (AI_full) lub po edycji (AI_edited).
 - Ręczne tworzenie fiszek: Użytkownik ma możliwość tworzenia fiszek przez wpisanie treści (przodu i tyłu fiszki).
 - Rejestracja i logowanie: Użytkownik zakłada konto (email/hasło) oraz loguje się do systemu.
-- Przeglądanie fiszek: Użytkownik przegląda swoje fiszki z możliwością filtrowania według metody dodania (AI vs manual) oraz sortowania po dacie.
+- Przeglądanie fiszek: Użytkownik przegląda swoje fiszki z możliwością filtrowania według metody dodania (AI_full, AI_edited, manual) oraz sortowania po dacie.
 - Edycja i usuwanie fiszek: Użytkownik edytuje lub usuwa swoje fiszki (z widoku przeglądania fiszek), przy czym każda z tych operacji wymaga potwierdzenia.
-- Rejestracja działań: System zapisuje każdą akcję użytkownika (dodanie manualne, akceptacja lub odrzucenie fiszki generowanej przez AI) z timestampem.
+- Rejestracja generacji: System zapisuje sesje generacji fiszek przez AI, rejestrując liczbę wygenerowanych fiszek, liczbę zaakceptowanych fiszek bez edycji (AI_full), liczbę zaakceptowanych fiszek po edycji (AI_edited), czas generacji oraz wykorzystany model AI.
 - Integracja z algorytmem powtórek: Fiszki są automatycznie integrowane z algorytmem powtórek.
 
 ## 4. Granice produktu
@@ -56,21 +56,25 @@
 - Opis: Użytkownik wkleja tekst, na podstawie którego AI generuje propozycje fiszek.
 - Kryteria akceptacji:
    - Po wprowadzeniu tekstu, który musi posiadać co najmniej 1000 znaków i nie może przekroczyć 10000 znaków, system generuje propozycje przodu i tyłu pięciu fiszek poprzez AI.
+   - System zapisuje rekord generacji w tabeli generations z całkowitą liczbą wygenerowanych fiszek, czasem generacji w milisekundach oraz nazwą wykorzystanego modelu AI.
    - Użytkownik widzi propozycje fiszek wygenerowanych przez AI, jako kafelki z propozycjami tyłu i przodu fiszki, znajdujące się pod polem na wpisywanie tekstu do wygenerowania fiszek.
-   - Tekst tyłu i przodu fiszki ma mieć minimum 2 znaki, do 200 znaków
+   - Tekst tyłu i przodu fiszki ma mieć minimum 2 znaki, do 200 znaków.
+   - Tekst tyłu i przodu fiszki jest w trybie edytowalnym (użytkownik może zedytować przed zaakceptowaniem)
    - Propozycje są przedstawione z możliwością akceptacji (naciskając przycisk "Accept" na kafelku fiszki) lub odrzucenia (naciskając przycisk "Reject" na fiszce).
    - Po akceptacji przez użytkownika wygenerowanej fiszki, fiszka jest zapisywana w bazie danych z odpowiednim timestampem dla zalogowanego użytkownika.
+   - Jeśli użytkownik zaakceptuje fiszkę bez edycji, jest ona zapisywana z typem creation_method "AI_full", a licznik accepted_full w rekordzie generacji jest zwiększany.
+   - Jeśli użytkownik edytuje fiszkę przed zaakceptowaniem, jest ona zapisywana z typem creation_method "AI_edited", a licznik accepted_edited w rekordzie generacji jest zwiększany.
    - System potwierdza zapis fiszki.
-   - W przypadku odrzucenia lub akceptacji, system zapisuje ten fakt z timestampem.
-   - Generowanie fiszek za pomocą AI odbywa się na dedykowanym widoku do manualnego dodawania fiszek, na który można wejść z nawigacji paska górnego z labelką "Generate".
+   - W przypadku odrzucenia, system usuwa wygenerowaną fiszkę z listy wygenerowanych fiszek na UI.
+   - Generowanie fiszek za pomocą AI odbywa się na dedykowanym widoku do generowania fiszek, na który można wejść z nawigacji paska górnego z labelką "Generate".
 
 ### US-004: Przeglądanie, edycja i usuwanie fiszek
 - Tytuł: Zarządzanie fiszkami
-- Opis: Użytkownik przegląda swoje fiszki, filtrując je według metody dodania (AI vs manual) oraz sortując po dacie, a następnie dokonuje edycji lub usunięcia pojedynczych fiszek.
+- Opis: Użytkownik przegląda swoje fiszki, filtrując je według metody dodania oraz sortując po dacie, a następnie dokonuje edycji lub usunięcia pojedynczych fiszek.
 - Kryteria akceptacji:
    - Użytkownik widzi listę własnych fiszek jako kafelki z treścią przodu i tyłu fiszki w trybie tylko do odczytu.
-   - Istnieje możliwość filtrowania fiszek według sposobu dodania - filtrowanie frontendowe.
-   - Fiszki można sortować po dacie (timestamp), od najstarszych lub od najnowszych (toggle) - sortowanie frontendowe.
+   - Istnieje możliwość filtrowania fiszek według sposobu dodania - filtrowanie frontendowe (dostępne opcje filtrowania: wszystkie, AI_full, AI_edited, manual; default: wszystkie).
+   - Fiszki można sortować po dacie (timestamp), od najstarszych lub od najnowszych (toggle) - sortowanie frontendowe (default: od najnowszych).
    - Operacja usunięcią odbywa się za pomocą przycisku na kafelku fiszki z labelką "Remove".
    - Operacja edycji odbywa się za pomocą przycisku na kafelku fiszki z labelką "Edit", wtedy treści stają się edytowalne (wyłącza się tryb tylko do odczytu), a przycisk "Edit" znika pojawia się przycisk "Save", który zapisuje treść fiszki w bazie danych.
    - Operacje edycji i usuwania wymagają potwierdzenia przed wykonaniem za pomocą modalu potwierdzającego.
@@ -79,10 +83,11 @@
 
 ### US-005: Dostęp do statystyk użytkownika
 - Tytuł: Statystyki użytkownika
-- Opis: Użytkownik ma dostęp do swoich statystyk dotyczących liczby fiszek: manualnie dodanych, zaakceptowanych oraz odrzuconych (wszystkich wygenerowanych przez AI).
+- Opis: Użytkownik ma dostęp do swoich statystyk dotyczących liczby fiszek: manualnie dodanych, zaakceptowanych bez edycji (AI_full), zaakceptowanych po edycji (AI_edited) oraz niezaakceptowanych (wygenerowanych przez AI).
 - Kryteria akceptacji:
-   - System wyświetla statystyki zalogowanego użytkownika na podstawie zapisanych rekordów odrzucenia i akceptacji wygenerowanych przez AI fiszek oraz zapisanych manualnie fiszek.
-   - Statystyki są dostępne na widoku przeglądania fiszek jako licznik ilości zapisanych manualnie fiszek, akceptacji wygenerowanych fiszek, odrzuceń wygenerowanych fiszek oraz ich procentowy odpowiednik w nawiasie przy ilości.
+   - System wyświetla statystyki zalogowanego użytkownika na podstawie zapisanych danych o ilości wygenerowanych fiszek przez AI, ilości zaakceptowanych fiszek bez edycji, ilości zaakceptowanych fiszek po edycji oraz zapisanych manualnie fiszek.
+   - System oblicza ilość odrzuconych fiszek jako różnicę między całkowitą liczbą wygenerowanych fiszek a sumą zaakceptowanych fiszek (zarówno AI_full, jak i AI_edited).
+   - Statystyki są dostępne na widoku przeglądania fiszek jako licznik ilości zapisanych manualnie fiszek, ilości zaakceptowanych fiszek bez edycji, ilości zaakceptowanych fiszek po edycji, ilości odrzuconych fiszek, każdy licznik ma procentowy odpowiednik w nawiasie (obok wartości).
 
 ### US-006: Sesja uczenia się na podstawie własnych fiszek
 - Tytuł: Użytkownik uczy się przy pomocy własnych fiszek
