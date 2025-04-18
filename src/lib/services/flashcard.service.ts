@@ -76,6 +76,40 @@ export class FlashcardService {
       .single();
 
     if (error) throw new Error(`Failed to create flashcard: ${error.message}`);
+
+    // update generation counters for AI-generated flashcards
+    if ("generation_id" in data) {
+      if (data.creation_method === "ai_full") {
+        const { data: gen, error: fetchErr } = await this.supabase
+          .from("generations")
+          .select("accepted_full")
+          .eq("id", data.generation_id)
+          .single();
+        if (fetchErr) throw new Error(`Failed to fetch generation record: ${fetchErr.message}`);
+        const newCount = (gen.accepted_full ?? 0) + 1;
+        console.log("FULL count:", newCount);
+        const { error: updateErr } = await this.supabase
+          .from("generations")
+          .update({ accepted_full: newCount })
+          .eq("id", data.generation_id);
+        if (updateErr) throw new Error(`Failed to update generation accepted_full: ${updateErr.message}`);
+      } else if (data.creation_method === "ai_edited") {
+        const { data: gen, error: fetchErr } = await this.supabase
+          .from("generations")
+          .select("accepted_edited")
+          .eq("id", data.generation_id)
+          .single();
+        if (fetchErr) throw new Error(`Failed to fetch generation record: ${fetchErr.message}`);
+        const newCount = (gen.accepted_edited ?? 0) + 1;
+        console.log("EDIT count:", newCount);
+        const { error: updateErr } = await this.supabase
+          .from("generations")
+          .update({ accepted_edited: newCount })
+          .eq("id", data.generation_id);
+        if (updateErr) throw new Error(`Failed to update generation accepted_edited: ${updateErr.message}`);
+      }
+    }
+
     return newFlashcard;
   }
 
