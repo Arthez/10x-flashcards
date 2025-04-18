@@ -51,17 +51,25 @@ export class FlashcardService {
     data: CreateManualFlashcardCommand | AcceptAIFlashcardCommand,
     userId: string
   ): Promise<FlashcardDTO> {
-    // If this is an AI-generated flashcard, verify the generation exists
+    // Pre-check AI-generated flashcard limits
+    let acceptedFull = 0;
+    let acceptedEdited = 0;
     if ("generation_id" in data) {
-      const { error: genError } = await this.supabase
+      // Fetch current counters and total
+      const { data: gen, error: fetchErr } = await this.supabase
         .from("generations")
-        .select("id")
+        .select("accepted_full, accepted_edited, total_generated")
         .eq("id", data.generation_id)
         .eq("user_id", userId)
         .single();
-
-      if (genError) {
+      if (fetchErr) {
         throw new Error("Invalid or unauthorized generation ID");
+      }
+      acceptedFull = gen.accepted_full ?? 0;
+      acceptedEdited = gen.accepted_edited ?? 0;
+      const total = gen.total_generated;
+      if (acceptedFull + acceptedEdited + 1 > total) {
+        throw new Error("Cannot accept more flashcards than generated");
       }
     }
 
@@ -80,31 +88,15 @@ export class FlashcardService {
     // update generation counters for AI-generated flashcards
     if ("generation_id" in data) {
       if (data.creation_method === "ai_full") {
-        const { data: gen, error: fetchErr } = await this.supabase
-          .from("generations")
-          .select("accepted_full")
-          .eq("id", data.generation_id)
-          .single();
-        if (fetchErr) throw new Error(`Failed to fetch generation record: ${fetchErr.message}`);
-        const newCount = (gen.accepted_full ?? 0) + 1;
-        console.log("FULL count:", newCount);
         const { error: updateErr } = await this.supabase
           .from("generations")
-          .update({ accepted_full: newCount })
+          .update({ accepted_full: acceptedFull + 1 })
           .eq("id", data.generation_id);
         if (updateErr) throw new Error(`Failed to update generation accepted_full: ${updateErr.message}`);
       } else if (data.creation_method === "ai_edited") {
-        const { data: gen, error: fetchErr } = await this.supabase
-          .from("generations")
-          .select("accepted_edited")
-          .eq("id", data.generation_id)
-          .single();
-        if (fetchErr) throw new Error(`Failed to fetch generation record: ${fetchErr.message}`);
-        const newCount = (gen.accepted_edited ?? 0) + 1;
-        console.log("EDIT count:", newCount);
         const { error: updateErr } = await this.supabase
           .from("generations")
-          .update({ accepted_edited: newCount })
+          .update({ accepted_edited: acceptedEdited + 1 })
           .eq("id", data.generation_id);
         if (updateErr) throw new Error(`Failed to update generation accepted_edited: ${updateErr.message}`);
       }
