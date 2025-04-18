@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 import { GenerationService } from "../../../lib/services/generation.service";
 import { generateFlashcardsSchema } from "../../../schemas/generation.schema";
+import { SUPABASE_DEFAULT_USER_ID } from "@/db/supabase.client";
 
 export const prerender = false;
 
@@ -23,7 +24,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   try {
     // TODO: Add proper authentication validation here
     // For now, using a valid UUID format for testing RLS
-    const userId = "2a8bc1b5-8558-4fd6-a3b1-5be0a6f98e85";
+    const userId = SUPABASE_DEFAULT_USER_ID;
 
     // Parse and validate request body
     let body;
