@@ -1,8 +1,11 @@
 ---
-import Welcome from "../components/Welcome.astro";
 import Layout from "../layouts/Layout.astro";
+import { GenerateView } from "../components/generate/GenerateView";
 ---
 
-<Layout>
-  <Welcome />
+<Layout title="10x Flashcards - AI-Powered Learning">
+  <main class="container mx-auto px-4 py-8">
+    <h1 class="text-4xl font-bold mb-8">Create AI-Powered Flashcards</h1>
+    <GenerateView client:load />
+  </main>
 </Layout>
