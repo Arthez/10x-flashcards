@@ -204,7 +204,6 @@ function useGeneration() {
 function useFlashcardProposals() {
   const [proposals, setProposals] = useState<FlashcardProposalViewModel[]>([]);
   const [generationId, setGenerationId] = useState<string | null>(null);
-  const [acceptedCount, setAcceptedCount] = useState({ total: 0, edited: 0, unedited: 0 });
 
   function initializeProposals(proposalsDTO: FlashcardProposalDTO[], genId: string) {
     setGenerationId(genId);
@@ -253,18 +252,11 @@ function useFlashcardProposals() {
       
       await api.post('/api/flashcards', command);
       
-      // Aktualizacja liczników
-      setAcceptedCount(prev => ({
-        total: prev.total + 1,
-        edited: prev.edited + (proposal.isEdited ? 1 : 0),
-        unedited: prev.unedited + (proposal.isEdited ? 0 : 1)
-      }));
-      
       // Usunięcie zaakceptowanej propozycji z listy
       setProposals(current => current.filter(p => p.id !== id));
       
       // Wyświetlenie powiadomienia o sukcesie
-      toast.success("Fiszka zaakceptowana pomyślnie!");
+      toast.success("Flashcard accepted successfully!");
     } catch (error) {
       // Przywrócenie stanu i wyświetlenie błędu
       setProposals(current =>
@@ -274,7 +266,7 @@ function useFlashcardProposals() {
             : p
         )
       );
-      toast.error("Błąd podczas zapisywania fiszki.");
+      toast.error("Error while saving flashcard.");
     }
   }
 
@@ -286,13 +278,11 @@ function useFlashcardProposals() {
   function reset() {
     setProposals([]);
     setGenerationId(null);
-    setAcceptedCount({ total: 0, edited: 0, unedited: 0 });
   }
 
   return {
     proposals,
     generationId,
-    acceptedCount,
     initializeProposals,
     updateProposal,
     acceptProposal,
@@ -379,16 +369,16 @@ function useFlashcardProposals() {
 - Maksymalna długość: 10000 znaków
 - Czas walidacji: podczas wprowadzania tekstu (dla aktywacji przycisku) oraz przed wysłaniem formularza
 - Komunikaty błędów:
-  - "Wprowadź co najmniej 1000 znaków"
-  - "Tekst nie może przekraczać 10000 znaków"
+  - "Enter at least 1000 characters"
+  - "Text cannot exceed 10000 characters"
 
 ### Walidacja treści fiszki:
 - Minimalna długość: 2 znaki
 - Maksymalna długość: 200 znaków
 - Czas walidacji: podczas edycji oraz przed akceptacją
 - Komunikaty błędów:
-  - "Wprowadź co najmniej 2 znaki"
-  - "Tekst nie może przekraczać 200 znaków"
+  - "Enter at least 2 characters"
+  - "Text cannot exceed 200 characters"
 
 ### Warunki przesłania formularza:
 - Przycisk "Generate" jest aktywny tylko gdy długość tekstu wynosi 1000-10000 znaków
@@ -401,19 +391,19 @@ function useFlashcardProposals() {
 - Wyłączenie przycisków akcji do czasu spełnienia warunków walidacji
 
 ### Błędy API podczas generowania:
-- 400: "Nieprawidłowe dane wejściowe. Upewnij się, że tekst ma odpowiednią długość."
-- 401: "Sesja wygasła. Zaloguj się ponownie."
-- 429: "Przekroczono limit żądań. Spróbuj ponownie później."
-- 500: "Wystąpił błąd podczas generowania. Spróbuj ponownie później."
-- 503: "Usługa generowania jest obecnie niedostępna. Spróbuj ponownie później."
+- 400: "Invalid input data. Make sure the text has the correct length."
+- 401: "Session expired. Please log in again."
+- 429: "Request limit exceeded. Please try again later."
+- 500: "An error occurred during generation. Please try again later."
+- 503: "The generation service is currently unavailable. Please try again later."
 
 ### Błędy API podczas akceptacji:
-- 400: "Nieprawidłowe dane fiszki. Upewnij się, że treść ma odpowiednią długość."
-- 401: "Sesja wygasła. Zaloguj się ponownie."
-- 500: "Wystąpił błąd podczas zapisywania fiszki. Spróbuj ponownie później."
+- 400: "Invalid flashcard data. Make sure the content has the correct length."
+- 401: "Session expired. Please log in again."
+- 500: "An error occurred while saving the flashcard. Please try again later."
 
 ### Błędy połączenia:
-- "Brak połączenia z serwerem. Sprawdź swoje połączenie internetowe i spróbuj ponownie."
+- "No connection to the server. Check your internet connection and try again."
 
 ## 11. Kroki implementacji
 
