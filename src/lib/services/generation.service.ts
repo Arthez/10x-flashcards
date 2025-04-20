@@ -1,9 +1,8 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "../../db/database.types";
+import type { SupabaseClient } from "../../db/supabase.client.ts";
 import type { GenerateFlashcardsCommand, GenerationResponseDTO } from "../../types";
 
 export class GenerationService {
-  constructor(private readonly supabase: SupabaseClient<Database>) {}
+  constructor(private readonly supabase: SupabaseClient) {}
 
   /**
    * Generates flashcards from input text using AI
@@ -15,7 +14,7 @@ export class GenerationService {
       // TODO: Replace with actual AI service call
       const defaultAiModel = "o3-mini";
       const defaultNumberOfCards = 5;
-      const mockProposals = Array.from({ length: defaultNumberOfCards }, (_, i) => ({
+      const mockProposals = new Array(defaultNumberOfCards).fill(null).map((_, i) => ({
         front_content: `What is concept ${i + 1}?`,
         back_content: `This is the explanation for concept ${i + 1} - ${input.input_text.substring(0, 10)}.`,
       }));
