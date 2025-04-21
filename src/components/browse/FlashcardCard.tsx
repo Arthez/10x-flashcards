@@ -65,7 +65,7 @@ const FlashcardCard = ({ flashcard, onEdit, onDelete }: FlashcardCardProps) => {
       });
       setIsEditing(false);
       setErrors({});
-    } catch (error) {
+    } catch {
       setErrors({
         front: "Failed to save changes",
         back: "Failed to save changes",
