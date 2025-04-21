@@ -86,14 +86,14 @@ const StatsPanel = forwardRef<StatsPanelRef>((_, ref) => {
   if (!stats) return null;
 
   const statItems = [
+    { label: "AI unedited", count: stats.ai_full_count, percent: stats.ai_full_percent },
+    { label: "AI edited", count: stats.ai_edited_count, percent: stats.ai_edited_percent },
     { label: "Manual", count: stats.manual_count, percent: stats.manual_percent },
-    { label: "AI Generated", count: stats.ai_full_count, percent: stats.ai_full_percent },
-    { label: "AI Edited", count: stats.ai_edited_count, percent: stats.ai_edited_percent },
-    { label: "Rejected", count: stats.rejected_count, percent: stats.rejected_percent },
+    { label: "AI rejected", count: stats.rejected_count, percent: stats.rejected_percent },
   ];
 
   return (
-    <Card>
+    <Card className="min-h-[100px]">
       <CardContent className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {statItems.map((item) => (
