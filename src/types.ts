@@ -69,6 +69,7 @@ export interface FlashcardProposalDTO {
  */
 export interface GenerateFlashcardsCommand {
   input_text: string; // 1000-10000 characters
+  number_of_cards?: number; // Optional, defaults to 5
 }
 
 /**
