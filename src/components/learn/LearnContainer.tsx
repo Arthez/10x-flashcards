@@ -64,7 +64,7 @@ export default function LearnContainer() {
       <div className="flex flex-col items-center gap-4 text-center" role="status">
         <p className="text-muted-foreground">You don&apos;t have any flashcards yet. Create some to start learning!</p>
         <Button asChild>
-          <a href="/create">Create Flashcards</a>
+          <a href="/add">Create Flashcards</a>
         </Button>
       </div>
     );
@@ -73,7 +73,9 @@ export default function LearnContainer() {
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-2xl mx-auto relative">
       <KeyboardShortcutsHelp />
-      {state.currentFlashcard ? (
+      {state.sessionEnded ? (
+        <SessionEndMessage isVisible={true} onRestart={resetSession} />
+      ) : state.currentFlashcard ? (
         <FocusContainer
           isActive={true}
           description="Current flashcard"
@@ -96,14 +98,9 @@ export default function LearnContainer() {
           </div>
         </FocusContainer>
       ) : (
-        <div className="flex flex-col items-center gap-4">
-          <SessionEndMessage isVisible={state.sessionEnded} onRestart={resetSession} />
-          {!state.sessionEnded && (
-            <FocusContainer isActive={true} description="Draw flashcard section">
-              <DrawFlashcardButton onDraw={drawFlashcard} disabled={false} isLarge />
-            </FocusContainer>
-          )}
-        </div>
+        <FocusContainer isActive={true} description="Draw flashcard section">
+          <DrawFlashcardButton onDraw={drawFlashcard} disabled={false} isLarge />
+        </FocusContainer>
       )}
     </div>
   );
