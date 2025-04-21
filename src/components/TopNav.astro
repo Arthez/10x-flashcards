@@ -20,6 +20,7 @@ const pathname = new URL(Astro.request.url).pathname;
       <a
         href="/add"
         class={`text-sm font-medium transition-colors hover:text-primary ${pathname === "/add" ? "text-primary" : "text-muted-foreground"}`}
+        aria-current={pathname === "/add" ? "page" : undefined}
       >
         Add
       </a>
