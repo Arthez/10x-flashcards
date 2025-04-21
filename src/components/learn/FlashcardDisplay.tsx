@@ -10,7 +10,7 @@ interface FlashcardDisplayProps {
 export function FlashcardDisplay({ flashcard, isFlipped, onFlip }: FlashcardDisplayProps) {
   return (
     <Card
-      className="w-full min-h-[200px] p-6 flex items-center justify-center text-center cursor-pointer select-none"
+      className="w-full max-w-[500px] min-h-[200px] p-6 flex items-center justify-center text-center cursor-pointer select-none"
       onClick={onFlip}
       role="button"
       tabIndex={0}
@@ -22,7 +22,7 @@ export function FlashcardDisplay({ flashcard, isFlipped, onFlip }: FlashcardDisp
       }}
       aria-label={isFlipped ? "Back of flashcard" : "Front of flashcard"}
     >
-      <p className="text-xl">{isFlipped ? flashcard.back_content : flashcard.front_content}</p>
+      <p className="text-xl break-all">{isFlipped ? flashcard.back_content : flashcard.front_content}</p>
     </Card>
   );
 }
