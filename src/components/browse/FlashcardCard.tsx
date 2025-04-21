@@ -91,6 +91,17 @@ const FlashcardCard = ({ flashcard, onEdit, onDelete }: FlashcardCardProps) => {
     setBackContent(flashcard.back_content);
   };
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   const creationMethodStyles = {
     ai_full: "bg-green-500",
     ai_edited: "bg-blue-500",
@@ -148,30 +159,33 @@ const FlashcardCard = ({ flashcard, onEdit, onDelete }: FlashcardCardProps) => {
           </>
         )}
       </CardContent>
-      <CardFooter className="p-4 pt-0 flex justify-end gap-2">
-        {isEditing ? (
-          <>
-            <Button variant="outline" size="sm" onClick={handleCancel} disabled={isSubmitting}>
-              <X className="h-4 w-4 mr-1" />
-              Cancel
-            </Button>
-            <Button size="sm" onClick={handleSave} disabled={isSubmitting}>
-              <Save className="h-4 w-4 mr-1" />
-              Save
-            </Button>
-          </>
-        ) : (
-          <>
-            <Button variant="outline" size="sm" onClick={handleEdit}>
-              <Pencil className="h-4 w-4 mr-1" />
-              Edit
-            </Button>
-            <Button variant="destructive" size="sm" onClick={handleDelete}>
-              <Trash2 className="h-4 w-4 mr-1" />
-              Delete
-            </Button>
-          </>
-        )}
+      <CardFooter className="p-4 pt-0 flex justify-between items-center">
+        <span className="text-sm text-muted-foreground">Updated: {formatDate(flashcard.updated_at)}</span>
+        <div className="flex gap-2">
+          {isEditing ? (
+            <>
+              <Button variant="outline" size="sm" onClick={handleCancel} disabled={isSubmitting}>
+                <X className="h-4 w-4 mr-1" />
+                Cancel
+              </Button>
+              <Button size="sm" onClick={handleSave} disabled={isSubmitting}>
+                <Save className="h-4 w-4 mr-1" />
+                Save
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant="outline" size="sm" onClick={handleEdit}>
+                <Pencil className="h-4 w-4 mr-1" />
+                Edit
+              </Button>
+              <Button variant="destructive" size="sm" onClick={handleDelete}>
+                <Trash2 className="h-4 w-4 mr-1" />
+                Delete
+              </Button>
+            </>
+          )}
+        </div>
       </CardFooter>
     </Card>
   );
