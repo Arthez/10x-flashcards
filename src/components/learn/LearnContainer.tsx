@@ -88,11 +88,11 @@ export default function LearnContainer() {
           }}
         >
           <div className="space-y-6">
-            <FlashcardDisplay flashcard={state.currentFlashcard} isFlipped={state.isFlipped} onFlip={flipCard} />
-            <div className="flex gap-4 justify-center">
+            <div className="flex gap-4 justify-center mb-4">
               <FlipCardButton onFlip={flipCard} disabled={false} />
               <DrawFlashcardButton onDraw={drawFlashcard} disabled={state.availableFlashcards.length === 0} />
             </div>
+            <FlashcardDisplay flashcard={state.currentFlashcard} isFlipped={state.isFlipped} onFlip={flipCard} />
           </div>
         </FocusContainer>
       ) : (
