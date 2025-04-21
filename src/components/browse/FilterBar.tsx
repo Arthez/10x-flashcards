@@ -15,8 +15,8 @@ interface FilterBarProps {
 const FilterBar = ({ activeFilter, sortDirection, onFilterChange, onSortChange }: FilterBarProps) => {
   const filters: { type: FilterType; label: string }[] = [
     { type: "all", label: "All types" },
-    { type: "ai_full", label: "AI Generated" },
-    { type: "ai_edited", label: "AI Edited" },
+    { type: "ai_full", label: "AI unedited" },
+    { type: "ai_edited", label: "AI edited" },
     { type: "manual", label: "Manual" },
   ];
 
