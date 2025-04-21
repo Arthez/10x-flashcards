@@ -236,15 +236,6 @@ export default function FlashcardForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6" aria-busy={formState.isSubmitting}>
-      {formState.successMessage && (
-        <div
-          className="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800"
-          role="status"
-        >
-          <span className="font-medium">Success:</span> {formState.successMessage}
-        </div>
-      )}
-
       <div className="space-y-2">
         <label htmlFor="front_content" className="block text-sm font-medium">
           Front Content <span className="text-red-500">*</span>
