@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, forwardRef, useImperativeHandle } from "react";
 import type { StatsResponseDTO } from "../../types";
 import { Card, CardContent } from "../ui/card";
 
@@ -10,7 +10,11 @@ interface StatsViewModel extends StatsResponseDTO {
   rejected_percent: number;
 }
 
-const StatsPanel = () => {
+export interface StatsPanelRef {
+  refresh: () => void;
+}
+
+const StatsPanel = forwardRef<StatsPanelRef>((_, ref) => {
   const [stats, setStats] = useState<StatsViewModel | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -43,6 +47,10 @@ const StatsPanel = () => {
       setLoading(false);
     }
   };
+
+  useImperativeHandle(ref, () => ({
+    refresh: fetchStats,
+  }));
 
   useEffect(() => {
     fetchStats();
@@ -99,6 +107,8 @@ const StatsPanel = () => {
       </CardContent>
     </Card>
   );
-};
+});
+
+StatsPanel.displayName = "StatsPanel";
 
 export default StatsPanel;

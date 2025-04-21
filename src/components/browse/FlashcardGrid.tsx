@@ -8,9 +8,10 @@ interface FlashcardGridProps {
   sortDirection: SortDirection;
   onEdit: (id: string, data: UpdateFlashcardCommand) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
+  onSuccess?: () => void;
 }
 
-const FlashcardGrid = ({ activeFilter, sortDirection, onEdit, onDelete }: FlashcardGridProps) => {
+const FlashcardGrid = ({ activeFilter, sortDirection, onEdit, onDelete, onSuccess }: FlashcardGridProps) => {
   const [flashcards, setFlashcards] = useState<FlashcardDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -35,6 +36,18 @@ const FlashcardGrid = ({ activeFilter, sortDirection, onEdit, onDelete }: Flashc
   useEffect(() => {
     fetchFlashcards();
   }, []);
+
+  const handleEdit = async (id: string, data: UpdateFlashcardCommand) => {
+    await onEdit(id, data);
+    await fetchFlashcards();
+    onSuccess?.();
+  };
+
+  const handleDelete = async (id: string) => {
+    await onDelete(id);
+    await fetchFlashcards();
+    onSuccess?.();
+  };
 
   // Filter and sort flashcards
   const filteredAndSortedFlashcards = flashcards
@@ -80,10 +93,11 @@ const FlashcardGrid = ({ activeFilter, sortDirection, onEdit, onDelete }: Flashc
       </div>
     );
   }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {filteredAndSortedFlashcards.map((flashcard) => (
-        <FlashcardCard key={flashcard.id} flashcard={flashcard} onEdit={onEdit} onDelete={onDelete} />
+        <FlashcardCard key={flashcard.id} flashcard={flashcard} onEdit={handleEdit} onDelete={handleDelete} />
       ))}
     </div>
   );

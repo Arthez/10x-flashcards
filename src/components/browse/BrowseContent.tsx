@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import type { UpdateFlashcardCommand } from "../../types";
 import StatsPanel from "./StatsPanel";
 import FilterBar from "./FilterBar";
@@ -8,6 +8,7 @@ import type { FilterType, SortDirection } from "./FilterBar";
 const BrowseContent = () => {
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [sortDirection, setSortDirection] = useState<SortDirection>("newest");
+  const statsPanelRef = useRef<{ refresh: () => void }>(null);
 
   const handleFilterChange = (filter: FilterType) => {
     setActiveFilter(filter);
@@ -43,9 +44,14 @@ const BrowseContent = () => {
     }
   };
 
+  const handleOperationSuccess = () => {
+    // Refresh stats panel
+    statsPanelRef.current?.refresh();
+  };
+
   return (
     <div className="space-y-8">
-      <StatsPanel />
+      <StatsPanel ref={statsPanelRef} />
 
       <div className="space-y-4">
         <FilterBar
@@ -59,6 +65,7 @@ const BrowseContent = () => {
           sortDirection={sortDirection}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          onSuccess={handleOperationSuccess}
         />
       </div>
     </div>
