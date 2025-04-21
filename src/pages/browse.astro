@@ -1,0 +1,18 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { ConfirmModalProvider } from "../hooks/useConfirmModal";
+import BrowseContent from "../components/browse/BrowseContent";
+
+// Set client-side hydration for React components
+export const prerender = false;
+---
+
+<Layout title="Browse Flashcards">
+  <main class="container mx-auto px-4 py-8">
+    <h1 class="text-4xl font-bold mb-8">Browse Flashcards</h1>
+
+    <ConfirmModalProvider client:load>
+      <BrowseContent client:load />
+    </ConfirmModalProvider>
+  </main>
+</Layout>
