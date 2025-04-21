@@ -107,30 +107,44 @@ const FlashcardCard = ({ flashcard, onEdit, onDelete }: FlashcardCardProps) => {
         {isEditing ? (
           <>
             <div className="space-y-2">
+              <span id="front-label" className="text-sm font-medium block">
+                Front side
+              </span>
               <Textarea
                 placeholder="Front content"
                 value={frontContent}
                 onChange={(e) => setFrontContent(e.target.value)}
                 className={errors.front ? "border-destructive" : ""}
                 disabled={isSubmitting}
+                aria-labelledby="front-label"
               />
               {errors.front && <p className="text-xs text-destructive">{errors.front}</p>}
             </div>
             <div className="space-y-2">
+              <span id="back-label" className="text-sm font-medium block">
+                Back side
+              </span>
               <Textarea
                 placeholder="Back content"
                 value={backContent}
                 onChange={(e) => setBackContent(e.target.value)}
                 className={errors.back ? "border-destructive" : ""}
                 disabled={isSubmitting}
+                aria-labelledby="back-label"
               />
               {errors.back && <p className="text-xs text-destructive">{errors.back}</p>}
             </div>
           </>
         ) : (
           <>
-            <p className="font-medium">{flashcard.front_content}</p>
-            <p className="text-muted-foreground">{flashcard.back_content}</p>
+            <div className="space-y-2">
+              <span className="text-sm font-medium block">Front side</span>
+              <p className="break-all">{flashcard.front_content}</p>
+            </div>
+            <div className="space-y-2">
+              <span className="text-sm font-medium block">Back side</span>
+              <p className="break-all">{flashcard.back_content}</p>
+            </div>
           </>
         )}
       </CardContent>
