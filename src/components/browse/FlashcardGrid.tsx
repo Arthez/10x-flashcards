@@ -56,8 +56,8 @@ const FlashcardGrid = ({ activeFilter, sortDirection, onEdit, onDelete, onSucces
       return flashcard.creation_method === activeFilter;
     })
     .sort((a, b) => {
-      const dateA = new Date(a.created_at).getTime();
-      const dateB = new Date(b.created_at).getTime();
+      const dateA = new Date(a.updated_at).getTime();
+      const dateB = new Date(b.updated_at).getTime();
       return sortDirection === "newest" ? dateB - dateA : dateA - dateB;
     });
 
