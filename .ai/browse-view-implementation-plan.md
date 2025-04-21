@@ -278,7 +278,7 @@ function useConfirmModal() {
 ```
 
 ## 7. Integracja API
-Widok będzie korzystał z dwóch głównych endpointów:
+Widok będzie korzystał z endpointów (które już istnieją):
 
 ### 1. Endpoint do pobierania fiszek
 - **URL**: `/api/flashcards`
@@ -475,39 +475,34 @@ async function fetchStats(): Promise<StatsResponseDTO> {
    src/hooks/useConfirmModal.ts
    ```
 
-4. **Implementacja endpointu statystyk** (jeśli nie istnieje):
-   ```
-   src/pages/api/stats.ts
-   ```
-
-5. **Implementacja komponentu `StatsPanel`**:
+4. **Implementacja komponentu `StatsPanel`**:
    - Utworzenie interfejsu
    - Implementacja logiki obliczania procentów
    - Dodanie stylów z Tailwind
 
-6. **Implementacja komponentu `FilterBar`**:
+5. **Implementacja komponentu `FilterBar`**:
    - Utworzenie przycisków filtrowania
    - Implementacja przycisku sortowania
    - Dodanie stanu aktywnego filtra
    - Dodanie obsługi dostępności (aria-pressed)
 
-7. **Implementacja komponentu `FlashcardCard`**:
+6. **Implementacja komponentu `FlashcardCard`**:
    - Utworzenie widoku tylko do odczytu
    - Dodanie trybu edycji
    - Implementacja walidacji pól
    - Dodanie przycisków akcji
    - Implementacja wskaźnika metody utworzenia
 
-8. **Implementacja komponentu `FlashcardGrid`**:
+7. **Implementacja komponentu `FlashcardGrid`**:
    - Utworzenie gridu z responsywnym układem
    - Dodanie obsługi stanu ładowania (Spinner)
    - Implementacja komunikatu o braku fiszek
 
-9. **Implementacja modalu potwierdzenia** (jeśli nie istnieje):
+8. **Implementacja modalu potwierdzenia** (jeśli nie istnieje):
    - Utworzenie komponentu modalnego
    - Implementacja akcji potwierdzenia i anulowania
    - Dodanie animacji i dostępności
 
-10. **Integracja komponentów w stronie Astro**:
+9. **Integracja komponentów w stronie Astro**:
     - Dodanie wszystkich komponentów do strony browse.astro
     - Konfiguracja układu strony
