@@ -19,6 +19,7 @@
     "@astrojs/sitemap": "3.3.0",
     "@radix-ui/react-dialog": "^1.1.10",
     "@radix-ui/react-slot": "^1.1.2",
+    "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.49.4",
     "astro": "5.5.5",
     "class-variance-authority": "^0.7.1",
