@@ -4,7 +4,7 @@
 
 ### 1.1. Frontend - widoki i komponenty
 
-- Utworzę dedykowane strony autentykacyjne: `/auth/login`, `/auth/register` oraz `/auth/reset-password`, zlokalizowane w katalogu `src/pages/auth`.
+- Utworzę dedykowane strony autentykacyjne: `/auth/login`, `/auth/register`, oraz dwustopniowy proces resetowania hasła składający się z widoku `/auth/reset-password/request` (wysłanie linku resetującego) oraz widoku `/auth/reset-password/reset` (ustawienie nowego hasła), zlokalizowanych w katalogu `src/pages/auth`.
 - Każda ze stron będzie oparta na Astro, wykorzystując istniejący system layoutów (np. `src/layouts`) oraz integrację z komponentami UI z biblioteki Shadcn/ui.
 - Formularze rejestracji, logowania oraz resetowania hasła zostaną zaimplementowane jako komponenty React w katalogu `src/components/ui`, aby zapewnić interaktywność (walidacja, dynamiczne komunikaty błędów, observacja stanu formularza).
 - Formy będą walidować dane wejściowe na poziomie client-side (np. za pomocą React state i/lub dedykowanych hooków) oraz zostaną poddane dodatkowej walidacji po stronie serwera w endpointach API.
@@ -32,7 +32,8 @@
 - Endpointy autentykacyjne zostaną utworzone w katalogu `src/pages/api/auth`:
   - `login.ts` – obsługuje logowanie (metoda POST), wywołując `supabase.auth.signInWithPassword`.
   - `register.ts` – obsługuje rejestrację (metoda POST), wywołując `supabase.auth.signUp`.
-  - `reset-password.ts` – (ewentualny) endpoint do resetowania hasła; proces może być dwufazowy: wysłanie linku resetującego oraz zmiana hasła po weryfikacji.
+  - `reset-password-request.ts` – endpoint do inicjowania procesu resetowania hasła poprzez wysłanie linku resetującego na e-mail (metoda POST).
+  - `reset-password-reset.ts` – endpoint do zmiany hasła po weryfikacji tokenu z linku resetującego (metoda POST).
   - `logout.ts` – endpoint wylogowania, wykorzystujący `supabase.auth.signOut`.
 - Endpointy będą przyjmować dane wejściowe w formacie JSON, walidować je przy użyciu np. biblioteki zod lub własnych mechanizmów walidacji.
 - W przypadku błędów (np. niepoprawne dane, błąd Supabase) endpointy zwrócą odpowiedź HTTP 400 z komunikatem błędu.
@@ -58,8 +59,7 @@
   - W przypadku, gdy użytkownik nie jest zalogowany, następuje przekierowanie do strony `/auth/login`.
 - System zarządzania sesjami jest oparty o bezpieczne ciasteczka (httpOnly, secure, sameSite: 'lax'), co zapewnia zgodność z najlepszymi praktykami bezpieczeństwa.
 - W przypadku resetowania hasła:
-  - Proces rozpoczyna się od wysłania linku resetującego na adres e-mail użytkownika.
-  - Po kliknięciu w link, użytkownik przekierowywany jest do strony resetowania hasła, gdzie podaje nowe hasło, które zostaje następnie zweryfikowane i zapisane.
+  - Proces składa się z dwóch etapów: (1) wysłania linku resetującego na adres e-mail użytkownika, realizowanego przez endpoint `reset-password-request.ts` (metoda POST), oraz (2) zmiany hasła po weryfikacji tokenu, realizowanej przez endpoint `reset-password-reset.ts` (metoda POST).
 
 ## Wnioski i podsumowanie
 
