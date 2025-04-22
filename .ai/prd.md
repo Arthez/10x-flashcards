@@ -12,7 +12,7 @@
 - Generowanie fiszek przez AI: Użytkownik wprowadza tekst, na podstawie którego AI generuje propozycje fiszek (przodu i tyłu fiszki).
 - Akceptacja lub odrzucenie fiszek generowanych przez AI: Użytkownik decyduje, czy propozycja fiszki zostanie zaakceptowana (zapisana) czy odrzucona. Zaakceptowane fiszki mogą być zapisane bez edycji (AI_full) lub po edycji (AI_edited).
 - Ręczne tworzenie fiszek: Użytkownik ma możliwość tworzenia fiszek przez wpisanie treści (przodu i tyłu fiszki).
-- Rejestracja i logowanie: Użytkownik zakłada konto (email/hasło) oraz loguje się do systemu.
+- Rejestracja, logowanie i resetowanie hasła: Użytkownik zakłada konto (email/hasło) oraz loguje się do systemu, ma też możliwość zresetowania hasła.
 - Przeglądanie fiszek: Użytkownik przegląda swoje fiszki z możliwością filtrowania według metody dodania (AI_full, AI_edited, manual) oraz sortowania po dacie.
 - Edycja i usuwanie fiszek: Użytkownik edytuje lub usuwa swoje fiszki (z widoku przeglądania fiszek), przy czym każda z tych operacji wymaga potwierdzenia.
 - Rejestracja generacji: System zapisuje sesje generacji fiszek przez AI, rejestrując liczbę wygenerowanych fiszek, liczbę zaakceptowanych fiszek bez edycji (AI_full), liczbę zaakceptowanych fiszek po edycji (AI_edited), czas generacji oraz wykorzystany model AI.
@@ -29,17 +29,21 @@
 
 ## 5. Historyjki użytkowników
 
-### US-001: Rejestracja i logowanie
-- Tytuł: Rejestracja i logowanie użytkownika
-- Opis: Użytkownik tworzy konto za pomocą email/hasło i loguje się do systemu.
+### US-001: Rejestracja, logowanie i resetowanie hasła
+- Tytuł: Rejestracja i logowanie użytkownika oraz resetowanie hasła
+- Opis: Użytkownik tworzy konto za pomocą email/hasło i loguje się do systemu. Użytkownik ma możliwość zresetowania hasła za pomocą wysłania linka na maila.
 - Kryteria akceptacji:
    - Użytkownik jest w stanie zarejestrować konto, podając unikalny email oraz hasło.
    - Użytkownik może zalogować się i wylogować.
+   - Użytkownik może zresetować hasło przed zalogowaniem
    - Do rejestracji będzie dedykowany widok z formularzem rejestracji, gdzie użytkownik będzie mógł podać email, hasło i powtórzyć hasło
    - Do logowania będzie dedykowany widok z formularzem logowania, gdzie użytkownik będzie mógł podać email i hasło
-   - Do wylogowania będzie przycisk w pasku górnym po prawej stronie od nawigacji z labelką "Logout"
+   - Do resetowania hasła będą dedykowane widoki z formularzem resetowania hasła, na pierwszym widoku użytkownik będzie mógł podać email (jeśli istnieje w bazie dostanie linka do drugiego widoku), na drugim widoku użytkownik będzie mógł podać nowe hasło i je powtórzyć aby dokonać zmiany hasła
+   - Do wylogowania będzie przycisk w pasku górnym po prawej stronie od nawigacji z labelką "Logout" (tylko gdy jest zalogowany)
    - Pole na email musi posiadać walidację zawierania znaku "@" oraz "." 
    - Pole na hasło musi posiadać walidację na minimum 4 znaki, te 4 znaki muszą się składać z liter oraz cyfr
+   - Przed zalogowaniem, użytkownik będzie miał tylko dostęp do widoku "Login", "Register", "Reset password"
+   - Po zalogowaniu użytkownik będzie miał tylko dostęp do widoku "Learn", "Browse", "Add", "Generate"
 
 ### US-002: Tworzenie fiszki manualnie
 - Tytuł: Manualne tworzenie fiszki
