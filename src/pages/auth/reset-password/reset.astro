@@ -1,0 +1,20 @@
+---
+import AuthLayout from '@/layouts/AuthLayout.astro';
+import ResetPasswordForm from '@/components/auth/ResetPasswordForm';
+---
+
+<AuthLayout>
+  <div class="flex flex-col space-y-2 text-center">
+    <h1 class="text-2xl font-semibold tracking-tight">Reset your password</h1>
+    <p class="text-sm text-muted-foreground">
+      Enter your new password below
+    </p>
+  </div>
+  <ResetPasswordForm client:load />
+  <p class="px-8 text-center text-sm text-muted-foreground">
+    Remember your password?{" "}
+    <a href="/auth/login" class="hover:text-brand underline underline-offset-4">
+      Sign in
+    </a>
+  </p>
+</AuthLayout> 

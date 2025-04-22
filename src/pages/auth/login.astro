@@ -1,0 +1,25 @@
+---
+import AuthLayout from '@/layouts/AuthLayout.astro';
+import LoginForm from '@/components/auth/LoginForm';
+---
+
+<AuthLayout>
+  <div class="flex flex-col space-y-2 text-center">
+    <h1 class="text-2xl font-semibold tracking-tight">Welcome back</h1>
+    <p class="text-sm text-muted-foreground">
+      Enter your email and password to sign in to your account
+    </p>
+  </div>
+  <LoginForm client:load />
+  <p class="px-8 text-center text-sm text-muted-foreground">
+    <a href="/auth/reset-password/request" class="hover:text-brand underline underline-offset-4">
+      Forgot your password?
+    </a>
+  </p>
+  <p class="px-8 text-center text-sm text-muted-foreground">
+    Don't have an account?{" "}
+    <a href="/auth/register" class="hover:text-brand underline underline-offset-4">
+      Sign up
+    </a>
+  </p>
+</AuthLayout> 
