@@ -1,6 +1,6 @@
 ---
-import AuthLayout from '@/layouts/AuthLayout.astro';
-import ResetPasswordRequestForm from '@/components/auth/ResetPasswordRequestForm';
+import AuthLayout from "@/layouts/AuthLayout.astro";
+import ResetPasswordRequestForm from "@/components/auth/ResetPasswordRequestForm";
 ---
 
 <AuthLayout>
@@ -13,8 +13,6 @@ import ResetPasswordRequestForm from '@/components/auth/ResetPasswordRequestForm
   <ResetPasswordRequestForm client:load />
   <p class="px-8 text-center text-sm text-muted-foreground">
     Remember your password?{" "}
-    <a href="/auth/login" class="hover:text-brand underline underline-offset-4">
-      Sign in
-    </a>
+    <a href="/auth/login" class="hover:text-brand underline underline-offset-4"> Sign in </a>
   </p>
-</AuthLayout> 
+</AuthLayout>
