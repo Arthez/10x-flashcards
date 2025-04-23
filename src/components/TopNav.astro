@@ -41,8 +41,19 @@ const pathname = new URL(Astro.request.url).pathname;
   document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("logout-button").addEventListener("click", async () => {
       try {
-        await fetch("/api/logout", { method: "POST" });
-        window.location.href = "/login";
+        const response = await fetch("/api/auth/logout", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.error || "Logout failed");
+        }
+
+        window.location.href = "/auth/login";
       } catch (error) {
         console.error("Logout failed:", error);
       }
