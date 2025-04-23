@@ -1,25 +1,15 @@
-import * as React from "react"
-import type { FieldValues } from "react-hook-form"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
-
-import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
-})
+});
 
-type FormData = z.infer<typeof formSchema>
+type FormData = z.infer<typeof formSchema>;
 
 export default function ResetPasswordRequestForm() {
   const form = useForm<FormData>({
@@ -27,11 +17,11 @@ export default function ResetPasswordRequestForm() {
     defaultValues: {
       email: "",
     },
-  })
+  });
 
   function onSubmit(values: FormData) {
     // Form submission will be handled by the backend
-    console.log(values)
+    console.log(values);
   }
 
   return (
@@ -55,5 +45,5 @@ export default function ResetPasswordRequestForm() {
         </Button>
       </form>
     </Form>
-  )
-} 
+  );
+}
