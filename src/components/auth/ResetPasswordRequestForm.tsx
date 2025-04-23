@@ -4,6 +4,8 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { useState } from "react";
 
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -12,6 +14,8 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 export default function ResetPasswordRequestForm() {
+  const [isLoading, setIsLoading] = useState(false);
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -19,9 +23,27 @@ export default function ResetPasswordRequestForm() {
     },
   });
 
-  function onSubmit(values: FormData) {
-    // Form submission will be handled by the backend
-    console.log(values);
+  async function onSubmit(values: FormData) {
+    try {
+      setIsLoading(true);
+      const response = await fetch("/api/auth/reset-password-request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Could not reset password. Try again.");
+      }
+
+      toast.success("Password reset link has been sent to your email");
+      form.reset();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not reset password. Try again.");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -40,8 +62,8 @@ export default function ResetPasswordRequestForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">
-          Send Reset Link
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? "Sending..." : "Send Reset Link"}
         </Button>
       </form>
     </Form>

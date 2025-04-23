@@ -4,6 +4,8 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { useState, useEffect } from "react";
 
 const formSchema = z
   .object({
@@ -21,6 +23,17 @@ const formSchema = z
 type FormData = z.infer<typeof formSchema>;
 
 export default function ResetPasswordForm() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    // Check if we have a token in the URL
+    const params = new URLSearchParams(window.location.search);
+    if (!params.get("token")) {
+      toast.error("Invalid reset link");
+      window.location.href = "/auth/login";
+    }
+  }, []);
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -29,9 +42,27 @@ export default function ResetPasswordForm() {
     },
   });
 
-  function onSubmit(values: FormData) {
-    // Form submission will be handled by the backend
-    console.log(values);
+  async function onSubmit(values: FormData) {
+    try {
+      setIsLoading(true);
+      const response = await fetch("/api/auth/reset-password-reset", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: values.password }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Could not reset password. Try again.");
+      }
+
+      toast.success("Password has been reset successfully");
+      window.location.href = "/auth/login";
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not reset password. Try again.");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -63,8 +94,8 @@ export default function ResetPasswordForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">
-          Reset Password
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? "Resetting..." : "Reset Password"}
         </Button>
       </form>
     </Form>
