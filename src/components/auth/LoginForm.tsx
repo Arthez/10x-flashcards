@@ -2,6 +2,8 @@ import * as React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useSearchParams } from "@/hooks/useSearchParams";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -18,6 +20,10 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 export default function LoginForm() {
+  const [isLoading, setIsLoading] = React.useState(false);
+  const searchParams = useSearchParams();
+  const returnUrl = searchParams.get("returnUrl");
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -26,9 +32,35 @@ export default function LoginForm() {
     },
   });
 
-  function onSubmit(values: FormData) {
-    // Form submission will be handled by the backend
-    console.log(values);
+  async function onSubmit(values: FormData) {
+    try {
+      setIsLoading(true);
+      const response = await fetch("/api/auth/login" + (returnUrl ? `?returnUrl=${returnUrl}` : ""), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (response.status === 400) {
+          form.setError("root", {
+            message: data.error || "Invalid email or password",
+          });
+        } else {
+          toast.error("An error occurred. Please try again later.");
+        }
+        return;
+      }
+
+      // Redirect on success
+      window.location.href = data.redirect;
+    } catch {
+      toast.error("An error occurred. Please try again later.");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -41,7 +73,7 @@ export default function LoginForm() {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="name@example.com" type="email" {...field} />
+                <Input placeholder="name@example.com" type="email" disabled={isLoading} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -54,14 +86,17 @@ export default function LoginForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input placeholder="Enter your password" type="password" {...field} />
+                <Input placeholder="Enter your password" type="password" disabled={isLoading} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">
-          Sign In
+        {form.formState.errors.root && (
+          <div className="text-sm font-medium text-destructive">{form.formState.errors.root.message}</div>
+        )}
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? "Signing in..." : "Sign In"}
         </Button>
       </form>
     </Form>
