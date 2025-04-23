@@ -82,7 +82,7 @@ export function SessionEndMessage({ onRestart, isVisible }: SessionEndMessagePro
               </motion.div>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button variant="outline" size="lg" asChild>
-                  <a href="/add">Create More Cards</a>
+                  <a href="/generate">Create More Cards</a>
                 </Button>
               </motion.div>
             </motion.div>
