@@ -18,7 +18,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         Location: "/auth/login",
       },
     });
-  } catch (error) {
+  } catch {
     return new Response(JSON.stringify({ error: "Internal server error during logout" }), { status: 500 });
   }
 };
