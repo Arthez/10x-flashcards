@@ -3,7 +3,6 @@ import type { SupabaseClient as SupabaseClientType } from "@supabase/supabase-js
 import { createServerClient, type CookieOptionsWithName } from "@supabase/ssr";
 import type { Database } from "./database.types";
 
-export const SUPABASE_DEFAULT_USER_ID = "cc2332d3-cf63-4398-9f43-d3443cfc906a";
 export type SupabaseClient = SupabaseClientType<Database>;
 
 export const cookieOptions: CookieOptionsWithName = {

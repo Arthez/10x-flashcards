@@ -1,38 +1,28 @@
 import type { APIRoute } from "astro";
 import { FlashcardService } from "../../../lib/services/flashcard.service";
-import { flashcardIdSchema, updateFlashcardSchema } from "../../../lib/schemas/flashcard.schema";
-import { SUPABASE_DEFAULT_USER_ID } from "@/db/supabase.client";
+import { updateFlashcardSchema } from "../../../lib/schemas/flashcard.schema";
 
 export const prerender = false;
 
 /**
- * GET /api/flashcards/:id - Get a single flashcard
+ * GET /api/flashcards/:id - Get a single flashcard by ID
  */
 export const GET: APIRoute = async ({ params, locals }) => {
   try {
-    // TODO: Add proper authentication validation here
-    // For now, using a valid UUID format for testing RLS
-    const userId = SUPABASE_DEFAULT_USER_ID;
-
-    const validationResult = flashcardIdSchema.safeParse(params.id);
-    if (!validationResult.success) {
+    if (!locals.user?.id) {
       return new Response(
         JSON.stringify({
           error: {
-            message: "Invalid flashcard ID",
-            code: "VALIDATION_ERROR",
-            details: validationResult.error.format(),
+            message: "Unauthorized",
+            code: "UNAUTHORIZED",
           },
         }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
+        { status: 401 }
       );
     }
 
     const flashcardService = new FlashcardService(locals.supabase);
-    const flashcard = await flashcardService.getFlashcard(params.id as string, userId);
+    const flashcard = await flashcardService.getFlashcard(params.id || "", locals.user.id);
 
     return new Response(JSON.stringify(flashcard), {
       status: 200,
@@ -49,10 +39,7 @@ export const GET: APIRoute = async ({ params, locals }) => {
             code: "NOT_FOUND",
           },
         }),
-        {
-          status: 404,
-          headers: { "Content-Type": "application/json" },
-        }
+        { status: 404 }
       );
     }
 
@@ -63,10 +50,7 @@ export const GET: APIRoute = async ({ params, locals }) => {
           code: "INTERNAL_ERROR",
         },
       }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      }
+      { status: 500 }
     );
   }
 };
@@ -74,26 +58,17 @@ export const GET: APIRoute = async ({ params, locals }) => {
 /**
  * PUT /api/flashcards/:id - Update a flashcard
  */
-export const PUT: APIRoute = async ({ params, request, locals }) => {
+export const PUT: APIRoute = async ({ request, params, locals }) => {
   try {
-    // TODO: Add proper authentication validation here
-    // For now, using a valid UUID format for testing RLS
-    const userId = SUPABASE_DEFAULT_USER_ID;
-
-    const idValidation = flashcardIdSchema.safeParse(params.id);
-    if (!idValidation.success) {
+    if (!locals.user?.id) {
       return new Response(
         JSON.stringify({
           error: {
-            message: "Invalid flashcard ID",
-            code: "VALIDATION_ERROR",
-            details: idValidation.error.format(),
+            message: "Unauthorized",
+            code: "UNAUTHORIZED",
           },
         }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
+        { status: 401 }
       );
     }
 
@@ -109,15 +84,12 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
             details: validationResult.error.format(),
           },
         }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
+        { status: 400 }
       );
     }
 
     const flashcardService = new FlashcardService(locals.supabase);
-    const flashcard = await flashcardService.updateFlashcard(params.id as string, validationResult.data, userId);
+    const flashcard = await flashcardService.updateFlashcard(params.id || "", validationResult.data, locals.user.id);
 
     return new Response(JSON.stringify(flashcard), {
       status: 200,
@@ -134,10 +106,7 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
             code: "NOT_FOUND",
           },
         }),
-        {
-          status: 404,
-          headers: { "Content-Type": "application/json" },
-        }
+        { status: 404 }
       );
     }
 
@@ -148,10 +117,7 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
           code: "INTERNAL_ERROR",
         },
       }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      }
+      { status: 500 }
     );
   }
 };
@@ -161,34 +127,22 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
  */
 export const DELETE: APIRoute = async ({ params, locals }) => {
   try {
-    // TODO: Add proper authentication validation here
-    // For now, using a valid UUID format for testing RLS
-    const userId = SUPABASE_DEFAULT_USER_ID;
-
-    const validationResult = flashcardIdSchema.safeParse(params.id);
-    if (!validationResult.success) {
+    if (!locals.user?.id) {
       return new Response(
         JSON.stringify({
           error: {
-            message: "Invalid flashcard ID",
-            code: "VALIDATION_ERROR",
-            details: validationResult.error.format(),
+            message: "Unauthorized",
+            code: "UNAUTHORIZED",
           },
         }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
+        { status: 401 }
       );
     }
 
     const flashcardService = new FlashcardService(locals.supabase);
-    await flashcardService.deleteFlashcard(params.id as string, userId);
+    await flashcardService.deleteFlashcard(params.id || "", locals.user.id);
 
-    return new Response(JSON.stringify({ message: "Flashcard deleted successfully" }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    return new Response(null, { status: 204 });
   } catch (error) {
     console.error("Error deleting flashcard:", error);
 
@@ -200,10 +154,7 @@ export const DELETE: APIRoute = async ({ params, locals }) => {
             code: "NOT_FOUND",
           },
         }),
-        {
-          status: 404,
-          headers: { "Content-Type": "application/json" },
-        }
+        { status: 404 }
       );
     }
 
@@ -214,10 +165,7 @@ export const DELETE: APIRoute = async ({ params, locals }) => {
           code: "INTERNAL_ERROR",
         },
       }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      }
+      { status: 500 }
     );
   }
 };

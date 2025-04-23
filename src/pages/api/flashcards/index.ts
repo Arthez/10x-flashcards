@@ -2,7 +2,6 @@ import type { APIRoute } from "astro";
 import { FlashcardService } from "../../../lib/services/flashcard.service";
 import { createFlashcardSchema } from "../../../lib/schemas/flashcard.schema";
 import type { FlashcardsResponseDTO } from "../../../types";
-import { SUPABASE_DEFAULT_USER_ID } from "@/db/supabase.client";
 
 export const prerender = false;
 
@@ -11,12 +10,20 @@ export const prerender = false;
  */
 export const GET: APIRoute = async ({ locals }) => {
   try {
-    // TODO: Add proper authentication validation here
-    // For now, using a valid UUID format for testing RLS
-    const userId = SUPABASE_DEFAULT_USER_ID;
+    if (!locals.user?.id) {
+      return new Response(
+        JSON.stringify({
+          error: {
+            message: "Unauthorized",
+            code: "UNAUTHORIZED",
+          },
+        }),
+        { status: 401 }
+      );
+    }
 
     const flashcardService = new FlashcardService(locals.supabase);
-    const flashcards = await flashcardService.listFlashcards(userId);
+    const flashcards = await flashcardService.listFlashcards(locals.user.id);
 
     const response: FlashcardsResponseDTO = { flashcards };
     return new Response(JSON.stringify(response), {
@@ -45,9 +52,17 @@ export const GET: APIRoute = async ({ locals }) => {
  */
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    // TODO: Add proper authentication validation here
-    // For now, using a valid UUID format for testing RLS
-    const userId = SUPABASE_DEFAULT_USER_ID;
+    if (!locals.user?.id) {
+      return new Response(
+        JSON.stringify({
+          error: {
+            message: "Unauthorized",
+            code: "UNAUTHORIZED",
+          },
+        }),
+        { status: 401 }
+      );
+    }
 
     const body = await request.json();
     const validationResult = createFlashcardSchema.safeParse(body);
@@ -69,7 +84,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     const flashcardService = new FlashcardService(locals.supabase);
-    const flashcard = await flashcardService.createFlashcard(validationResult.data, userId);
+    const flashcard = await flashcardService.createFlashcard(validationResult.data, locals.user.id);
 
     return new Response(JSON.stringify(flashcard), {
       status: 201,
