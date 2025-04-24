@@ -6,6 +6,7 @@ This project uses a comprehensive testing strategy with both unit tests and end-
 
 - **Unit Tests**: Located in `test/unit/`
 - **E2E Tests**: Located in `test/e2e/`
+- **Test Reports**: Generated in `test/reports/`
 
 ## Unit Testing with Vitest
 
@@ -26,6 +27,13 @@ npm run test:ui
 # Run tests with coverage report
 npm run test:coverage
 ```
+
+### Test Reports
+
+Unit test reports are generated in:
+- HTML reports: `test/reports/unit/html/`
+- JSON reports: `test/reports/unit/json/`
+- Coverage reports: `test/reports/coverage/`
 
 ### Writing Unit Tests
 
@@ -66,6 +74,11 @@ npm run dev
 # 2. Run tests in another terminal using the manual config
 npm run test:e2e:manual
 ```
+
+### Test Reports
+
+E2E test reports are generated in:
+- Automatic tests: `test/reports/e2e/`
 
 ### Troubleshooting E2E Tests
 

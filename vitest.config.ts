@@ -19,6 +19,7 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],
+      reportsDirectory: "./test/reports/coverage",
       exclude: ["**/node_modules/**", "**/test/e2e/**", "**/*.d.ts", "**/*.config.*"],
       thresholds: {
         statements: 70,
@@ -26,6 +27,10 @@ export default defineConfig({
         functions: 70,
         lines: 70,
       },
+    },
+    outputFile: {
+      html: "./test/reports/unit/html/index.html",
+      json: "./test/reports/unit/json/report.json",
     },
   },
 });
