@@ -1,4 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
+import dotenv from "dotenv";
+import path from "path";
+
+dotenv.config({ path: path.resolve(process.cwd(), ".env.test") });
 
 // This config is for manually running E2E tests when you already have the server running
 // Usage: First start the dev server with `npm run dev`, then run `npm run test:e2e:manual`
