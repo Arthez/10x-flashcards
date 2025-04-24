@@ -17,19 +17,16 @@ export class GenerationService {
     const startTime = Date.now();
 
     try {
-      logger.debug('Starting flashcard generation', {
-        context: 'GenerationService',
+      logger.debug("Starting flashcard generation", {
+        context: "GenerationService",
         data: {
           textLength: input.input_text.length,
-          model: this.openRouter.modelName
-        }
+          model: this.openRouter.modelName,
+        },
       });
 
       // Generate flashcards using OpenRouter
-      const proposals = await this.openRouter.generateFlashcards(
-        input.input_text,
-        input.number_of_cards || 5
-      );
+      const proposals = await this.openRouter.generateFlashcards(input.input_text, input.number_of_cards || 5);
 
       const generationTime = Date.now() - startTime;
 
@@ -47,9 +44,9 @@ export class GenerationService {
         .single();
 
       if (error) {
-        logger.error('Database error while saving generation', error, {
-          context: 'GenerationService',
-          data: { userId }
+        logger.error("Database error while saving generation", error, {
+          context: "GenerationService",
+          data: { userId },
         });
         throw new Error(`Database error: ${error.message}`);
       }
@@ -58,13 +55,13 @@ export class GenerationService {
         throw new Error("Failed to create generation record");
       }
 
-      logger.info('Successfully generated flashcards', {
-        context: 'GenerationService',
+      logger.info("Successfully generated flashcards", {
+        context: "GenerationService",
         data: {
           generationId: data.id,
           totalGenerated: proposals.length,
-          generationTime
-        }
+          generationTime,
+        },
       });
 
       return {
@@ -76,25 +73,23 @@ export class GenerationService {
       };
     } catch (error) {
       // Log the error and create a generation record with error
-      logger.error('Error generating flashcards', error, {
-        context: 'GenerationService',
-        data: { userId }
+      logger.error("Error generating flashcards", error, {
+        context: "GenerationService",
+        data: { userId },
       });
 
       // Try to create an error record
       try {
-        await this.supabase
-          .from("generations")
-          .insert({
-            user_id: userId,
-            total_generated: 0,
-            generation_time_ms: Date.now() - startTime,
-            ai_model: this.openRouter.modelName,
-            error: error instanceof Error ? error.message : 'Unknown error',
-          });
+        await this.supabase.from("generations").insert({
+          user_id: userId,
+          total_generated: 0,
+          generation_time_ms: Date.now() - startTime,
+          ai_model: this.openRouter.modelName,
+          error: error instanceof Error ? error.message : "Unknown error",
+        });
       } catch (dbError) {
-        logger.error('Failed to save generation error', dbError, {
-          context: 'GenerationService'
+        logger.error("Failed to save generation error", dbError, {
+          context: "GenerationService",
         });
       }
 
