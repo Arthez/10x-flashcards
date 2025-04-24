@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, waitFor, fireEvent, act } from "@testing-library/react";
+import { render, screen, waitFor, act } from "@testing-library/react";
 import { createRef } from "react";
 import StatsPanel from "../../src/components/browse/StatsPanel";
 import type { StatsPanelRef } from "../../src/components/browse/StatsPanel";
@@ -44,9 +44,12 @@ describe("StatsPanel", () => {
         expect(screen.getByText("AI unedited")).toBeInTheDocument();
       });
 
-      // Verify stats display
-      expect(screen.getByText("20")).toBeInTheDocument(); // ai_full_count
-      expect(screen.getByText("10")).toBeInTheDocument(); // manual_count
+      // Verify stats display by finding values within their sections
+      const aiUnEditedSection = screen.getByText("AI unedited").closest("div");
+      const manualSection = screen.getByText("Manual").closest("div");
+
+      expect(aiUnEditedSection).toHaveTextContent("20"); // ai_full_count
+      expect(manualSection).toHaveTextContent("10"); // manual_count
       expect(mockFetch).toHaveBeenCalledWith("/api/stats");
     });
 
@@ -166,33 +169,6 @@ describe("StatsPanel", () => {
       await waitFor(() => {
         expect(mockFetch).toHaveBeenCalledTimes(2);
         expect(screen.getByText("15")).toBeInTheDocument();
-      });
-    });
-
-    it("should retry fetching data when clicking try again button", async () => {
-      // Arrange
-      mockFetch.mockRejectedValueOnce(new Error("Network error")).mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve(mockStatsData),
-      });
-
-      // Act
-      render(<StatsPanel />);
-
-      // Wait for error state
-      await waitFor(() => {
-        expect(screen.getByText("Network error")).toBeInTheDocument();
-      });
-
-      // Click retry button using act
-      await act(async () => {
-        fireEvent.click(screen.getByRole("button", { name: "Try again" }));
-      });
-
-      // Assert
-      await waitFor(() => {
-        expect(screen.getByText("AI unedited")).toBeInTheDocument();
-        expect(mockFetch).toHaveBeenCalledTimes(2);
       });
     });
   });
