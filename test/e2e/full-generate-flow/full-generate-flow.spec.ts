@@ -29,11 +29,11 @@ test.describe("Full Generate Flow", () => {
     // 1. Login
     await loginPage.goto();
     await expect(page).toHaveURL("/auth/login");
-    const email = process.env.TEST_EMAIL;
-    const password = process.env.TEST_PASSWORD;
+    const email = process.env.E2E_USERNAME;
+    const password = process.env.E2E_PASSWORD;
 
     if (!email || !password) {
-      throw new Error("TEST_EMAIL and TEST_PASSWORD must be set in .env.test file");
+      throw new Error("E2E_USERNAME and E2E_PASSWORD must be set in .env.test file");
     }
 
     await loginPage.login(email, password);

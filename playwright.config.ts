@@ -10,7 +10,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: [["html", { outputFolder: "./test/reports/e2e" }], ["list"]],
+  reporter: [["html", { outputFolder: "./reports/e2e" }], ["list"]],
 
   // Only use Chromium/Desktop Chrome as specified in the rules
   projects: [
