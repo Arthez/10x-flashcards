@@ -28,6 +28,7 @@ test.describe("Full Generate Flow", () => {
   test("complete flashcard generation flow", async ({ page }) => {
     // 1. Login
     await loginPage.goto();
+    await expect(page).toHaveURL("/auth/login");
     const email = process.env.TEST_EMAIL;
     const password = process.env.TEST_PASSWORD;
 
@@ -36,6 +37,7 @@ test.describe("Full Generate Flow", () => {
     }
 
     await loginPage.login(email, password);
+    await expect(page).toHaveURL("/learn");
 
     // 2. Check learn page
     const createFlashcardButton = await learnPage.getCreateFlashcardButton();
@@ -45,6 +47,7 @@ test.describe("Full Generate Flow", () => {
 
     // 3-4. Check browse page
     await browsePage.goto();
+    await expect(page).toHaveURL("/browse");
     const initialStats = await browsePage.getStatistics();
     expect(initialStats.aiUnedited).toBe("0");
     expect(initialStats.aiEdited).toBe("0");
@@ -56,6 +59,7 @@ test.describe("Full Generate Flow", () => {
 
     // 5-6. Go to generate page and check heading
     await generatePage.goto();
+    await expect(page).toHaveURL("/generate");
     const heading = await generatePage.getHeading();
     await expect(heading).toHaveText("Generate Flashcards");
 
@@ -82,6 +86,7 @@ test.describe("Full Generate Flow", () => {
 
     // 13-15. Check browse page statistics and flashcards
     await browsePage.goto();
+    await expect(page).toHaveURL("/browse");
     const finalStats = await browsePage.getStatistics();
     expect(finalStats.aiUnedited).toBe("2");
     expect(finalStats.aiEdited).toBe("1");
@@ -98,6 +103,6 @@ test.describe("Full Generate Flow", () => {
 
     // 17-18. Logout and check login page
     await topNav.logout();
-    await expect(page).toHaveURL(/.*\/auth\/login/);
+    await expect(page).toHaveURL("/auth/login");
   });
 });
