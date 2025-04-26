@@ -18,25 +18,22 @@ test.describe.serial("Full Generate Flow", () => {
   let topNav: TopNavigation;
 
   const TEST_USER = {
-    email: process.env.E2E_USERNAME as string,
+    email: process.env.E2E_USERNAME ? process.env.E2E_USERNAME.replace("@", `${new Date().getTime()}@`) : "",
     password: process.env.E2E_PASSWORD as string,
   };
 
   const SUPABASE_CONFIG = {
     url: process.env.SUPABASE_URL as string,
     publicKey: process.env.SUPABASE_KEY as string,
-    serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY as string,
   };
-
-  let userId: string;
 
   test.beforeAll(async () => {
     if (!TEST_USER.email || !TEST_USER.password) {
       throw new Error("E2E_USERNAME and E2E_PASSWORD must be set in .env.test file");
     }
 
-    if (!SUPABASE_CONFIG.url || !SUPABASE_CONFIG.publicKey || !SUPABASE_CONFIG.serviceRoleKey) {
-      throw new Error("SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY and SUPABASE_KEY must be set in .env.test file");
+    if (!SUPABASE_CONFIG.url || !SUPABASE_CONFIG.publicKey) {
+      throw new Error("SUPABASE_URL and SUPABASE_KEY must be set in .env.test file");
     }
 
     // Create Supabase client with public key for signup
@@ -55,21 +52,6 @@ test.describe.serial("Full Generate Flow", () => {
 
     if (!data.user?.id) {
       throw new Error("Failed to get user ID after creation");
-    }
-
-    userId = data.user.id;
-  });
-
-  test.afterAll(async () => {
-    // Create Supabase admin client with service role key
-    const supabaseAdmin = createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.serviceRoleKey);
-
-    // Delete user directly using admin API
-    const { error } = await supabaseAdmin.auth.admin.deleteUser(userId);
-
-    if (error) {
-      console.error("Failed to delete test user:", error.message);
-      throw error;
     }
   });
 
