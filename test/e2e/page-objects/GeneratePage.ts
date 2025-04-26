@@ -4,7 +4,7 @@ export class GeneratePage {
   constructor(private page: Page) {}
 
   async goto() {
-    await this.page.getByTestId("generate-nav-link").click();
+    await this.page.getByTestId("nav-generate").click();
   }
 
   async getHeading() {

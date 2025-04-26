@@ -109,7 +109,7 @@ const FlashcardCard = ({ flashcard, onEdit, onDelete }: FlashcardCardProps) => {
   };
 
   return (
-    <Card className="relative">
+    <Card className="relative" data-testid="flashcard-item">
       <div
         className={`absolute top-2 right-2 w-2 h-2 rounded-full ${creationMethodStyles[flashcard.creation_method]}`}
         title={`Creation method: ${flashcard.creation_method}`}

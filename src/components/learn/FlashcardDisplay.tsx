@@ -21,6 +21,7 @@ export function FlashcardDisplay({ flashcard, isFlipped, onFlip }: FlashcardDisp
       }}
       onClick={onFlip}
       aria-label={isFlipped ? "Back of flashcard" : "Front of flashcard"}
+      data-testid="flashcard-display"
     >
       <div
         className={`relative w-full h-full transition-transform duration-500 preserve-3d ${isFlipped ? "rotate-y-180" : ""}`}

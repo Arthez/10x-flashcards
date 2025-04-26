@@ -16,7 +16,7 @@ test.describe.serial("Full Generate Flow", () => {
   let generatePage: GeneratePage;
   let topNav: TopNavigation;
 
-  test.beforeAll(async ({ page }) => {
+  test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
     learnPage = new LearnPage(page);
     browsePage = new BrowsePage(page);

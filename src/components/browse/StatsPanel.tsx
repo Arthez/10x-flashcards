@@ -89,10 +89,10 @@ const StatsPanel = forwardRef<StatsPanelRef>((_, ref) => {
   if (!stats) return null;
 
   const statItems = [
-    { label: "AI unedited", count: stats.ai_full_count, percent: stats.ai_full_percent },
-    { label: "AI edited", count: stats.ai_edited_count, percent: stats.ai_edited_percent },
-    { label: "Manual", count: stats.manual_count, percent: stats.manual_percent },
-    { label: "AI rejected", count: stats.rejected_count, percent: stats.rejected_percent },
+    { label: "AI unedited", count: stats.ai_full_count, percent: stats.ai_full_percent, dataTestId: "ai-unedited" },
+    { label: "AI edited", count: stats.ai_edited_count, percent: stats.ai_edited_percent, dataTestId: "ai-edited" },
+    { label: "Manual", count: stats.manual_count, percent: stats.manual_percent, dataTestId: "manual" },
+    { label: "AI rejected", count: stats.rejected_count, percent: stats.rejected_percent, dataTestId: "ai-rejected" },
   ];
 
   return (
@@ -102,10 +102,10 @@ const StatsPanel = forwardRef<StatsPanelRef>((_, ref) => {
           {statItems.map((item) => (
             <div key={item.label} className="text-center space-y-2">
               <h3 className="text-sm font-medium text-muted-foreground">{item.label}</h3>
-              <p className="text-2xl font-bold" data-testid={"stat-count-" + item.label}>
+              <p className="text-2xl font-bold" data-testid={"stat-count-" + item.dataTestId}>
                 {item.count}
               </p>
-              <p className="text-sm text-muted-foreground" data-testid={"stat-percentage-" + item.label}>
+              <p className="text-sm text-muted-foreground" data-testid={"stat-percentage-" + item.dataTestId}>
                 {item.percent}%
               </p>
             </div>

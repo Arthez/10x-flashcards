@@ -4,15 +4,15 @@ export class BrowsePage {
   constructor(private page: Page) {}
 
   async goto() {
-    await this.page.getByTestId("browse-nav-link").click();
+    await this.page.getByTestId("nav-browse").click();
   }
 
   async getStatistics() {
     return {
-      aiUnedited: await this.page.getByTestId("ai-unedited-count").textContent(),
-      aiEdited: await this.page.getByTestId("ai-edited-count").textContent(),
-      manual: await this.page.getByTestId("manual-count").textContent(),
-      aiRejected: await this.page.getByTestId("ai-rejected-count").textContent(),
+      aiUnedited: await this.page.getByTestId("stat-count-ai-unedited").textContent(),
+      aiEdited: await this.page.getByTestId("stat-count-ai-edited").textContent(),
+      manual: await this.page.getByTestId("stat-count-manual").textContent(),
+      aiRejected: await this.page.getByTestId("stat-count-ai-rejected").textContent(),
     };
   }
 
@@ -25,6 +25,6 @@ export class BrowsePage {
   }
 
   async filterByAiEdited() {
-    await this.page.getByTestId("ai-edited-filter").click();
+    await this.page.getByTestId("filter-button-ai_edited").click();
   }
 }
