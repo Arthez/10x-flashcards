@@ -3,6 +3,7 @@
 A web application that accelerates learning through AI-generated flashcards and spaced repetition.
 
 ![Status](https://img.shields.io/badge/status-in%20development-yellow)
+[![CI](https://github.com/Arthez/10x-flashcards/actions/workflows/ci.yml/badge.svg)](https://github.com/Arthez/10x-flashcards/actions/workflows/ci.yml)
 
 ## Project Description
 
