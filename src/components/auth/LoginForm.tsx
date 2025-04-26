@@ -109,7 +109,7 @@ export default function LoginForm() {
             {form.formState.errors.root.message}
           </div>
         )}
-        <Button type="submit" className="w-full" disabled={isLoading} data-testid="submit-button">
+        <Button type="submit" className="w-full" disabled={isLoading} data-testid="login-button">
           {isLoading ? "Signing in..." : "Sign In"}
         </Button>
       </form>
