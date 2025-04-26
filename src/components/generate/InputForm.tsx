@@ -49,13 +49,14 @@ export function InputForm({ onSubmit, isLoading }: InputFormProps) {
           placeholder="Enter your text here (minimum 1000 characters up to 10000 characters)"
           className="min-h-[200px]"
           disabled={isLoading}
+          data-test="generate-input-textarea"
         />
         <div className="flex justify-between items-center">
           <CharacterCounter currentCount={characterCount} minCount={MIN_CHARS} maxCount={MAX_CHARS} />
           {error && <p className="text-sm text-destructive">{error}</p>}
         </div>
       </div>
-      <Button type="submit" disabled={!isValid || isLoading}>
+      <Button type="submit" disabled={!isValid || isLoading} data-test="generate-button">
         {isLoading ? "Generating..." : "Generate Flashcards"}
       </Button>
     </form>

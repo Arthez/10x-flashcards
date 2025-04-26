@@ -65,7 +65,7 @@ export default function LoginForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" data-test="login-form">
         <FormField
           control={form.control}
           name="email"
@@ -73,9 +73,15 @@ export default function LoginForm() {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="name@example.com" type="email" disabled={isLoading} {...field} />
+                <Input
+                  placeholder="name@example.com"
+                  type="email"
+                  disabled={isLoading}
+                  data-test="email-input"
+                  {...field}
+                />
               </FormControl>
-              <FormMessage />
+              <FormMessage data-test="email-error" />
             </FormItem>
           )}
         />
@@ -86,16 +92,24 @@ export default function LoginForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input placeholder="Enter your password" type="password" disabled={isLoading} {...field} />
+                <Input
+                  placeholder="Enter your password"
+                  type="password"
+                  disabled={isLoading}
+                  data-test="password-input"
+                  {...field}
+                />
               </FormControl>
-              <FormMessage />
+              <FormMessage data-test="password-error" />
             </FormItem>
           )}
         />
         {form.formState.errors.root && (
-          <div className="text-sm font-medium text-destructive">{form.formState.errors.root.message}</div>
+          <div className="text-sm font-medium text-destructive" data-test="form-error">
+            {form.formState.errors.root.message}
+          </div>
         )}
-        <Button type="submit" className="w-full" disabled={isLoading}>
+        <Button type="submit" className="w-full" disabled={isLoading} data-test="submit-button">
           {isLoading ? "Signing in..." : "Sign In"}
         </Button>
       </form>

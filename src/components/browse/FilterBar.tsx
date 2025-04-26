@@ -29,6 +29,7 @@ const FilterBar = ({ activeFilter, sortDirection, onFilterChange, onSortChange }
             variant={activeFilter === type ? "default" : "outline"}
             onClick={() => onFilterChange(type)}
             aria-pressed={activeFilter === type}
+            data-test={`filter-button-${type}`}
           >
             {label}
           </Button>

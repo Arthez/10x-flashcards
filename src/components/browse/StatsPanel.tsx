@@ -102,8 +102,12 @@ const StatsPanel = forwardRef<StatsPanelRef>((_, ref) => {
           {statItems.map((item) => (
             <div key={item.label} className="text-center space-y-2">
               <h3 className="text-sm font-medium text-muted-foreground">{item.label}</h3>
-              <p className="text-2xl font-bold">{item.count}</p>
-              <p className="text-sm text-muted-foreground">{item.percent}%</p>
+              <p className="text-2xl font-bold" data-test={"stat-count-" + item.label}>
+                {item.count}
+              </p>
+              <p className="text-sm text-muted-foreground" data-test={"stat-percentage-" + item.label}>
+                {item.percent}%
+              </p>
             </div>
           ))}
         </div>

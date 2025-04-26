@@ -85,7 +85,7 @@ const FlashcardGrid = ({ activeFilter, sortDirection, onEdit, onDelete, onSucces
   if (filteredAndSortedFlashcards.length === 0) {
     return (
       <div className="text-center p-8">
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground" data-test="no-flashcards-message">
           {flashcards.length === 0
             ? "No flashcards found. Create your first flashcard to get started!"
             : "No flashcards match the selected filter."}
