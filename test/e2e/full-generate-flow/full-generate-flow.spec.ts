@@ -5,6 +5,7 @@ import { LearnPage } from "../page-objects/LearnPage";
 import { BrowsePage } from "../page-objects/BrowsePage";
 import { GeneratePage } from "../page-objects/GeneratePage";
 import { TopNavigation } from "../page-objects/TopNavigation";
+import { createClient } from "@supabase/supabase-js";
 
 // Load test environment variables
 dotenv.config({ path: ".env.test" });
@@ -15,6 +16,62 @@ test.describe.serial("Full Generate Flow", () => {
   let browsePage: BrowsePage;
   let generatePage: GeneratePage;
   let topNav: TopNavigation;
+
+  const TEST_USER = {
+    email: process.env.E2E_USERNAME as string,
+    password: process.env.E2E_PASSWORD as string,
+  };
+
+  const SUPABASE_CONFIG = {
+    url: process.env.SUPABASE_URL as string,
+    publicKey: process.env.SUPABASE_KEY as string,
+    serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY as string,
+  };
+
+  let userId: string;
+
+  test.beforeAll(async () => {
+    if (!TEST_USER.email || !TEST_USER.password) {
+      throw new Error("E2E_USERNAME and E2E_PASSWORD must be set in .env.test file");
+    }
+
+    if (!SUPABASE_CONFIG.url || !SUPABASE_CONFIG.publicKey || !SUPABASE_CONFIG.serviceRoleKey) {
+      throw new Error("SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY and SUPABASE_KEY must be set in .env.test file");
+    }
+
+    // Create Supabase client with public key for signup
+    const supabase = createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.publicKey);
+
+    // Create test user
+    const { data, error } = await supabase.auth.signUp({
+      email: TEST_USER.email,
+      password: TEST_USER.password,
+    });
+
+    if (error) {
+      console.error("Failed to create test user:", error.message);
+      throw error;
+    }
+
+    if (!data.user?.id) {
+      throw new Error("Failed to get user ID after creation");
+    }
+
+    userId = data.user.id;
+  });
+
+  test.afterAll(async () => {
+    // Create Supabase admin client with service role key
+    const supabaseAdmin = createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.serviceRoleKey);
+
+    // Delete user directly using admin API
+    const { error } = await supabaseAdmin.auth.admin.deleteUser(userId);
+
+    if (error) {
+      console.error("Failed to delete test user:", error.message);
+      throw error;
+    }
+  });
 
   test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
@@ -27,14 +84,8 @@ test.describe.serial("Full Generate Flow", () => {
   test("1. should login successfully", async ({ page }) => {
     await loginPage.goto();
     await expect(page).toHaveURL("/auth/login");
-    const email = process.env.E2E_USERNAME;
-    const password = process.env.E2E_PASSWORD;
 
-    if (!email || !password) {
-      throw new Error("E2E_USERNAME and E2E_PASSWORD must be set in .env.test file");
-    }
-
-    await loginPage.login(email, password);
+    await loginPage.login(TEST_USER.email, TEST_USER.password);
     await expect(page).toHaveURL("/learn");
 
     // 2. should check learn page
@@ -47,7 +98,6 @@ test.describe.serial("Full Generate Flow", () => {
     await browsePage.goto();
     await expect(page).toHaveURL("/browse");
     const initialStats = await browsePage.getStatistics();
-    console.log("initialStats", initialStats);
     expect(initialStats.aiUnedited).toBe("0");
     expect(initialStats.aiEdited).toBe("0");
     expect(initialStats.manual).toBe("0");
