@@ -3,18 +3,20 @@ const pathname = new URL(Astro.request.url).pathname;
 const userEmail = Astro.locals.user?.email;
 ---
 
-<nav class="border-b">
+<nav class="border-b" data-test="top-nav">
   <div class="container mx-auto px-4 flex h-16 items-center justify-between">
     <div class="flex gap-6">
       <a
         href="/learn"
         class={`text-sm font-medium transition-colors hover:text-primary ${pathname === "/learn" ? "text-primary" : "text-muted-foreground"}`}
+        data-test="nav-learn"
       >
         Learn
       </a>
       <a
         href="/browse"
         class={`text-sm font-medium transition-colors hover:text-primary ${pathname === "/browse" ? "text-primary" : "text-muted-foreground"}`}
+        data-test="nav-browse"
       >
         Browse
       </a>
@@ -22,19 +24,25 @@ const userEmail = Astro.locals.user?.email;
         href="/add"
         class={`text-sm font-medium transition-colors hover:text-primary ${pathname === "/add" ? "text-primary" : "text-muted-foreground"}`}
         aria-current={pathname === "/add" ? "page" : undefined}
+        data-test="nav-add"
       >
         Add
       </a>
       <a
         href="/generate"
         class={`text-sm font-medium transition-colors hover:text-primary ${pathname === "/generate" ? "text-primary" : "text-muted-foreground"}`}
+        data-test="nav-generate"
       >
         Generate
       </a>
     </div>
     <div class="flex items-center gap-4">
-      <span class="text-sm text-muted-foreground">{userEmail}</span>
-      <button id="logout-button" class="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+      <span class="text-sm text-muted-foreground" data-test="user-email">{userEmail}</span>
+      <button
+        id="logout-button"
+        class="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+        data-test="logout-button"
+      >
         Logout
       </button>
     </div>

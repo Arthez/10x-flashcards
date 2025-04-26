@@ -75,7 +75,7 @@ const StatsPanel = forwardRef<StatsPanelRef>((_, ref) => {
     return (
       <Card>
         <CardContent className="p-6">
-          <div className="text-center space-y-4">
+          <div className="text-center space-y-4" data-test="stats-error">
             <p className="text-destructive">{error}</p>
             <button onClick={fetchStats} className="text-sm text-primary hover:underline">
               Try again
@@ -96,7 +96,7 @@ const StatsPanel = forwardRef<StatsPanelRef>((_, ref) => {
   ];
 
   return (
-    <Card className="min-h-[100px]">
+    <Card className="min-h-[100px]" data-test="stats-panel">
       <CardContent className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {statItems.map((item) => (

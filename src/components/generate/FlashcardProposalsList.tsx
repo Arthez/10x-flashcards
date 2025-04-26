@@ -24,9 +24,11 @@ export function FlashcardProposalsList({ proposals, onAccept, onReject, onUpdate
   }
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-semibold">Generated Flashcards</h2>
-      <div className="grid gap-6 md:grid-cols-2">
+    <div className="space-y-6" data-test="flashcard-proposals-container">
+      <h2 className="text-2xl font-semibold" data-test="flashcard-proposals-title">
+        Generated Flashcards
+      </h2>
+      <div className="grid gap-6 md:grid-cols-2" data-test="flashcard-proposals-grid">
         {proposals.map((proposal) => (
           <FlashcardProposalCard
             key={proposal.id}
@@ -34,6 +36,7 @@ export function FlashcardProposalsList({ proposals, onAccept, onReject, onUpdate
             onAccept={() => onAccept(proposal.id)}
             onReject={() => onReject(proposal.id)}
             onUpdate={(updates) => onUpdate(proposal.id, updates)}
+            data-test={`flashcard-proposal-${proposal.id}`}
           />
         ))}
       </div>
