@@ -1,115 +1,13 @@
 import { test, expect } from "@playwright/test";
-import type { Page } from "@playwright/test";
 import dotenv from "dotenv";
+import { LoginPage } from "../page-objects/LoginPage";
+import { LearnPage } from "../page-objects/LearnPage";
+import { BrowsePage } from "../page-objects/BrowsePage";
+import { GeneratePage } from "../page-objects/GeneratePage";
+import { TopNavigation } from "../page-objects/TopNavigation";
 
 // Load test environment variables
 dotenv.config({ path: ".env.test" });
-
-// Page Object Models
-class LoginPage {
-  constructor(private page: Page) {}
-
-  async goto() {
-    await this.page.goto("/auth/login");
-  }
-
-  async login(email: string, password: string) {
-    await this.page.getByTestId("email-input").fill(email);
-    await this.page.getByTestId("password-input").fill(password);
-    await this.page.getByTestId("login-button").click();
-  }
-}
-
-class LearnPage {
-  constructor(private page: Page) {}
-
-  async getCreateFlashcardButton() {
-    return this.page.getByTestId("create-flashcard-button");
-  }
-
-  async getFlashcards() {
-    return this.page.getByTestId("flashcard-item").all();
-  }
-}
-
-class BrowsePage {
-  constructor(private page: Page) {}
-
-  async goto() {
-    await this.page.getByTestId("browse-nav-link").click();
-  }
-
-  async getStatistics() {
-    return {
-      aiUnedited: await this.page.getByTestId("ai-unedited-count").textContent(),
-      aiEdited: await this.page.getByTestId("ai-edited-count").textContent(),
-      manual: await this.page.getByTestId("manual-count").textContent(),
-      aiRejected: await this.page.getByTestId("ai-rejected-count").textContent(),
-    };
-  }
-
-  async getFlashcards() {
-    return this.page.getByTestId("flashcard-item").all();
-  }
-
-  async getNoFlashcardsMessage() {
-    return this.page.getByTestId("no-flashcards-message");
-  }
-
-  async filterByAiEdited() {
-    await this.page.getByTestId("ai-edited-filter").click();
-  }
-}
-
-class GeneratePage {
-  constructor(private page: Page) {}
-
-  async goto() {
-    await this.page.getByTestId("generate-nav-link").click();
-  }
-
-  async getHeading() {
-    return this.page.getByRole("heading", { level: 1 });
-  }
-
-  async setInputText(text: string) {
-    await this.page.getByTestId("generate-input").fill(text);
-  }
-
-  async getGenerateButton() {
-    return this.page.getByTestId("generate-button");
-  }
-
-  async waitForFlashcardProposals() {
-    await this.page.waitForSelector('[data-test="flashcard-proposal"]', { state: "visible" });
-    return this.page.getByTestId("flashcard-proposal").all();
-  }
-
-  async editFlashcardFront(index: number, additionalText: string) {
-    const flashcard = (await this.page.getByTestId("flashcard-proposal").all())[index];
-    const frontContent = await flashcard.getByTestId("front-content");
-    const currentText = await frontContent.inputValue();
-    await frontContent.fill(currentText + additionalText);
-  }
-
-  async acceptFlashcard(index: number) {
-    const flashcard = (await this.page.getByTestId("flashcard-proposal").all())[index];
-    await flashcard.getByTestId("accept-button").click();
-  }
-
-  async rejectFlashcard(index: number) {
-    const flashcard = (await this.page.getByTestId("flashcard-proposal").all())[index];
-    await flashcard.getByTestId("reject-button").click();
-  }
-}
-
-class TopNavigation {
-  constructor(private page: Page) {}
-
-  async logout() {
-    await this.page.getByTestId("logout-button").click();
-  }
-}
 
 // Test suite
 test.describe("Full Generate Flow", () => {
