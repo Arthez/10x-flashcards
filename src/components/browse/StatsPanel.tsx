@@ -75,7 +75,7 @@ const StatsPanel = forwardRef<StatsPanelRef>((_, ref) => {
     return (
       <Card>
         <CardContent className="p-6">
-          <div className="text-center space-y-4" data-test="stats-error">
+          <div className="text-center space-y-4" data-testid="stats-error">
             <p className="text-destructive">{error}</p>
             <button onClick={fetchStats} className="text-sm text-primary hover:underline">
               Try again
@@ -96,16 +96,16 @@ const StatsPanel = forwardRef<StatsPanelRef>((_, ref) => {
   ];
 
   return (
-    <Card className="min-h-[100px]" data-test="stats-panel">
+    <Card className="min-h-[100px]" data-testid="stats-panel">
       <CardContent className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {statItems.map((item) => (
             <div key={item.label} className="text-center space-y-2">
               <h3 className="text-sm font-medium text-muted-foreground">{item.label}</h3>
-              <p className="text-2xl font-bold" data-test={"stat-count-" + item.label}>
+              <p className="text-2xl font-bold" data-testid={"stat-count-" + item.label}>
                 {item.count}
               </p>
-              <p className="text-sm text-muted-foreground" data-test={"stat-percentage-" + item.label}>
+              <p className="text-sm text-muted-foreground" data-testid={"stat-percentage-" + item.label}>
                 {item.percent}%
               </p>
             </div>

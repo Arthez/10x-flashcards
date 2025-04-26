@@ -8,7 +8,7 @@ interface FlashcardEditorFieldProps {
   error?: string;
   disabled?: boolean;
   className?: string;
-  "data-test"?: string;
+  "data-testid"?: string;
 }
 
 export function FlashcardEditorField({
@@ -18,19 +18,19 @@ export function FlashcardEditorField({
   error,
   disabled,
   className,
-  "data-test": dataTest,
+  "data-testid": dataTest,
 }: FlashcardEditorFieldProps) {
   return (
-    <div className={cn("space-y-2", className)} data-test={dataTest ? `${dataTest}-container` : undefined}>
+    <div className={cn("space-y-2", className)} data-testid={dataTest ? `${dataTest}-container` : undefined}>
       <div className="flex justify-between items-center">
         <label
           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          data-test={dataTest ? `${dataTest}-label` : undefined}
+          data-testid={dataTest ? `${dataTest}-label` : undefined}
         >
           {label}
         </label>
         {error && (
-          <p className="text-sm text-destructive" data-test={dataTest ? `${dataTest}-error` : undefined}>
+          <p className="text-sm text-destructive" data-testid={dataTest ? `${dataTest}-error` : undefined}>
             {error}
           </p>
         )}
@@ -40,7 +40,7 @@ export function FlashcardEditorField({
         onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => onChange(e.target.value)}
         disabled={disabled}
         className={cn("resize-none min-h-[100px]", error && "border-destructive focus-visible:ring-destructive")}
-        data-test={dataTest ? `${dataTest}-input` : undefined}
+        data-testid={dataTest ? `${dataTest}-input` : undefined}
       />
     </div>
   );

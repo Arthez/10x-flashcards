@@ -20,7 +20,7 @@ export class GeneratePage {
   }
 
   async waitForFlashcardProposals() {
-    await this.page.waitForSelector('[data-test="flashcard-proposal"]', { state: "visible" });
+    await this.page.waitForSelector('[data-testid="flashcard-proposal"]', { state: "visible" });
     return this.page.getByTestId("flashcard-proposal").all();
   }
 

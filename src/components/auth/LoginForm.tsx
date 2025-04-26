@@ -65,7 +65,7 @@ export default function LoginForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" data-test="login-form">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" data-testid="login-form">
         <FormField
           control={form.control}
           name="email"
@@ -77,11 +77,11 @@ export default function LoginForm() {
                   placeholder="name@example.com"
                   type="email"
                   disabled={isLoading}
-                  data-test="email-input"
+                  data-testid="email-input"
                   {...field}
                 />
               </FormControl>
-              <FormMessage data-test="email-error" />
+              <FormMessage data-testid="email-error" />
             </FormItem>
           )}
         />
@@ -96,20 +96,20 @@ export default function LoginForm() {
                   placeholder="Enter your password"
                   type="password"
                   disabled={isLoading}
-                  data-test="password-input"
+                  data-testid="password-input"
                   {...field}
                 />
               </FormControl>
-              <FormMessage data-test="password-error" />
+              <FormMessage data-testid="password-error" />
             </FormItem>
           )}
         />
         {form.formState.errors.root && (
-          <div className="text-sm font-medium text-destructive" data-test="form-error">
+          <div className="text-sm font-medium text-destructive" data-testid="form-error">
             {form.formState.errors.root.message}
           </div>
         )}
-        <Button type="submit" className="w-full" disabled={isLoading} data-test="submit-button">
+        <Button type="submit" className="w-full" disabled={isLoading} data-testid="submit-button">
           {isLoading ? "Signing in..." : "Sign In"}
         </Button>
       </form>

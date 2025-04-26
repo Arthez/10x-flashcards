@@ -64,7 +64,7 @@ export default function LearnContainer() {
       <div className="flex flex-col items-center gap-4 text-center" role="status">
         <p className="text-muted-foreground">You don&apos;t have any flashcards yet. Create some to start learning!</p>
         <Button asChild>
-          <a href="/generate" data-test="create-flashcards-button">
+          <a href="/generate" data-testid="create-flashcards-button">
             Create Flashcards
           </a>
         </Button>
