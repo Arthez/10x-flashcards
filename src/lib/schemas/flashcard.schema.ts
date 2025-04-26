@@ -1,5 +1,4 @@
 import { z } from "zod";
-import type { CreationMethod } from "../../types";
 
 // Base content validation schema
 export const flashcardContentSchema = z

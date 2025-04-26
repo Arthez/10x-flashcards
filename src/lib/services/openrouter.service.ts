@@ -1,4 +1,6 @@
-import { logger } from '../../lib/logger';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { FlashcardProposalDTO } from "@/types";
+import { logger } from "../../lib/logger";
 
 // Types for model parameters and responses
 interface ModelParameters {
@@ -23,20 +25,6 @@ interface OpenRouterConfig {
   defaultParameters?: Partial<ModelParameters>;
 }
 
-// JSON schema type for OpenRouter API
-interface JsonSchemaProperty {
-  type: string;
-  minLength?: number;
-  maxLength?: number;
-  items?: {
-    type: string;
-    properties: Record<string, JsonSchemaProperty>;
-    required: string[];
-    minItems?: number;
-    maxItems?: number;
-  };
-}
-
 interface OpenRouterResponseFormat {
   type: string;
   json_schema: {
@@ -46,7 +34,7 @@ interface OpenRouterResponseFormat {
 }
 
 interface ChatMessage {
-  role: 'system' | 'user' | 'assistant';
+  role: "system" | "user" | "assistant";
   content: string;
 }
 
@@ -97,54 +85,54 @@ IMPORTANT: Your response must be a valid JSON object with a 'flashcards' array c
 }`;
 
   private readonly _responseFormat: OpenRouterResponseFormat = {
-    type: 'json_schema',
+    type: "json_schema",
     json_schema: {
-      name: 'flashcards-schema',
+      name: "flashcards-schema",
       schema: {
-        type: 'object',
-        required: ['flashcards'],
+        type: "object",
+        required: ["flashcards"],
         properties: {
-            flashcards: {
-            type: 'array',
-                items: {
-                    type: 'object',
-                    required: ['front_content', 'back_content'],
-                    properties: {
-                        front_content: { type: 'string' },
-                        back_content: { type: 'string' }
-                    }
-                }
-        }
-      }
-    }
-  }
-};
+          flashcards: {
+            type: "array",
+            items: {
+              type: "object",
+              required: ["front_content", "back_content"],
+              properties: {
+                front_content: { type: "string" },
+                back_content: { type: "string" },
+              },
+            },
+          },
+        },
+      },
+    },
+  };
 
   constructor(config?: Partial<OpenRouterConfig>) {
     // Initialize configuration variables with optional overrides
     this.apiKey = config?.apiKey ?? import.meta.env.OPENROUTER_API_KEY;
-    this.baseURL = config?.baseURL ?? 'https://openrouter.ai/api/v1';
-    this.modelName = config?.modelName ?? 'openai/gpt-4o-mini';
+    this.baseURL = config?.baseURL ?? "https://openrouter.ai/api/v1";
+    this.modelName = config?.modelName ?? "openai/gpt-4o-mini";
     // this.modelName = config?.modelName ?? 'deepseek/deepseek-v3-base:free';
 
     if (!this.apiKey) {
-      throw new Error('OpenRouter API key is required');
+      throw new Error("OpenRouter API key is required");
     }
 
     if (!this.modelName) {
-      throw new Error('OpenRouter model name is required');
+      throw new Error("OpenRouter model name is required");
     }
 
     if (!this.baseURL) {
-      throw new Error('OpenRouter base URL is required');
+      throw new Error("OpenRouter base URL is required");
     }
-    
+
     // Set default model parameters
     this.modelParameters = {
       temperature: 0.7,
       max_tokens: 5000,
       top_p: 1,
-      ...config?.defaultParameters
+      ...config?.defaultParameters,
     };
   }
 
@@ -154,53 +142,53 @@ IMPORTANT: Your response must be a valid JSON object with a 'flashcards' array c
   public async sendChatCompletion(userMessage: string, context?: object): Promise<FlashcardResponse> {
     try {
       const payload = this._buildPayload(userMessage, context);
-      console.log('--------------- PAYLOAD', payload);
-      
-      logger.debug('Sending chat completion request', {
-        context: 'OpenRouterService',
+      console.log("--------------- PAYLOAD", payload);
+
+      logger.debug("Sending chat completion request", {
+        context: "OpenRouterService",
         data: {
           model: this.modelName,
           messageLength: userMessage.length,
           hasContext: Boolean(context),
-          payload
-        }
+          payload,
+        },
       });
 
       const response = await fetch(`${this.baseURL}/chat/completions`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': 'https://10x-flashcards.com',
-          'X-Title': '10x Flashcards'
+          Authorization: `Bearer ${this.apiKey}`,
+          "Content-Type": "application/json",
+          "HTTP-Referer": "https://10x-flashcards.com",
+          "X-Title": "10x Flashcards",
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        logger.error('API request failed', {
-          context: 'OpenRouterService',
+        logger.error("API request failed", {
+          context: "OpenRouterService",
           data: {
             status: response.status,
             statusText: response.statusText,
-            error: errorData
-          }
+            error: errorData,
+          },
         });
         throw new Error(`API request failed with status ${response.status}: ${JSON.stringify(errorData)}`);
       }
 
       const data = await response.json();
-      logger.debug('Raw API response', {
-        context: 'OpenRouterService',
-        data: JSON.stringify(data, null, 2)
+      logger.debug("Raw API response", {
+        context: "OpenRouterService",
+        data: JSON.stringify(data, null, 2),
       });
 
       const result = this._handleResponse(data);
       return result;
     } catch (error) {
       this._logError(error instanceof Error ? error : new Error(String(error)));
-      throw new Error('Failed to generate flashcard');
+      throw new Error("Failed to generate flashcard");
     }
   }
 
@@ -210,7 +198,7 @@ IMPORTANT: Your response must be a valid JSON object with a 'flashcards' array c
   public setModelParameters(parameters: Partial<ModelParameters>): void {
     this.modelParameters = {
       ...this.modelParameters,
-      ...parameters
+      ...parameters,
     };
   }
 
@@ -233,29 +221,29 @@ IMPORTANT: Your response must be a valid JSON object with a 'flashcards' array c
 
     const messages: ChatMessage[] = [
       {
-        role: 'system',
-        content: systemMessage
+        role: "system",
+        content: systemMessage,
       },
       {
-        role: 'user',
-        content: userMessage
-      }
+        role: "user",
+        content: userMessage,
+      },
     ];
 
-    logger.debug('Building API payload', {
-      context: 'OpenRouterService',
+    logger.debug("Building API payload", {
+      context: "OpenRouterService",
       data: {
         model: this.modelName,
         hasContext: Boolean(context),
-        messageCount: messages.length
-      }
+        messageCount: messages.length,
+      },
     });
 
     return {
       model: this.modelName,
       messages,
       response_format: this._responseFormat,
-      ...this.modelParameters
+      ...this.modelParameters,
     };
   }
 
@@ -266,65 +254,65 @@ IMPORTANT: Your response must be a valid JSON object with a 'flashcards' array c
     try {
       // Validate response structure
       if (!response?.choices?.length) {
-        throw new Error('Invalid response: missing choices array');
+        throw new Error("Invalid response: missing choices array");
       }
 
       const choice = response.choices[0];
-      logger.debug('Processing choice', {
-        context: 'OpenRouterService',
-        data: { choice }
+      logger.debug("Processing choice", {
+        context: "OpenRouterService",
+        data: { choice },
       });
 
       if (!choice?.message) {
-        throw new Error('Invalid response: missing message');
+        throw new Error("Invalid response: missing message");
       }
 
       const content = choice.message.content;
-      if (!content || typeof content !== 'string') {
+      if (!content || typeof content !== "string") {
         throw new Error(`Invalid response: invalid message content type: ${typeof content}`);
       }
 
       if (content.trim().length === 0) {
-        throw new Error('Invalid response: empty message content');
+        throw new Error("Invalid response: empty message content");
       }
 
       let parsedContent: unknown;
       try {
         parsedContent = JSON.parse(content);
       } catch (e) {
-        logger.error('Failed to parse response content', {
-          context: 'OpenRouterService',
+        logger.error("Failed to parse response content", {
+          context: "OpenRouterService",
           data: {
             content,
-            error: e instanceof Error ? e.message : 'Unknown error'
-          }
+            error: e instanceof Error ? e.message : "Unknown error",
+          },
         });
-        throw new Error('Invalid response: content is not valid JSON');
+        throw new Error("Invalid response: content is not valid JSON");
       }
 
       // Type guard for FlashcardResponse
       if (!this._isFlashcardResponse(parsedContent)) {
-        logger.error('Invalid response format', {
-          context: 'OpenRouterService',
-          data: { parsedContent }
+        logger.error("Invalid response format", {
+          context: "OpenRouterService",
+          data: { parsedContent },
         });
-        throw new Error('Invalid response: missing required fields or invalid types');
+        throw new Error("Invalid response: missing required fields or invalid types");
       }
 
       // Validate each flashcard's content
       for (const flashcard of parsedContent.flashcards) {
         if (!flashcard.front_content || !flashcard.back_content) {
-          throw new Error('Invalid flashcard: missing content');
+          throw new Error("Invalid flashcard: missing content");
         }
-        if (typeof flashcard.front_content !== 'string' || typeof flashcard.back_content !== 'string') {
-          throw new Error('Invalid flashcard: content must be string');
+        if (typeof flashcard.front_content !== "string" || typeof flashcard.back_content !== "string") {
+          throw new Error("Invalid flashcard: content must be string");
         }
       }
 
       return parsedContent;
     } catch (error) {
-      this._logError(error instanceof Error ? error : new Error('Response validation failed'));
-      throw new Error('Invalid response format from API');
+      this._logError(error instanceof Error ? error : new Error("Response validation failed"));
+      throw new Error("Invalid response format from API");
     }
   }
 
@@ -332,16 +320,17 @@ IMPORTANT: Your response must be a valid JSON object with a 'flashcards' array c
    * Type guard for FlashcardResponse
    */
   private _isFlashcardResponse(data: unknown): data is FlashcardResponse {
-    if (!data || typeof data !== 'object') return false;
-    
+    if (!data || typeof data !== "object") return false;
+
     const candidate = data as Record<string, unknown>;
     if (!Array.isArray(candidate.flashcards)) return false;
 
-    return candidate.flashcards.every(flashcard => 
-      typeof flashcard === 'object' &&
-      flashcard !== null &&
-      typeof (flashcard as any).front_content === 'string' &&
-      typeof (flashcard as any).back_content === 'string'
+    return candidate.flashcards.every(
+      (flashcard) =>
+        typeof flashcard === "object" &&
+        flashcard !== null &&
+        typeof (flashcard as FlashcardProposalDTO).front_content === "string" &&
+        typeof (flashcard as FlashcardProposalDTO).back_content === "string"
     );
   }
 
@@ -354,55 +343,55 @@ IMPORTANT: Your response must be a valid JSON object with a 'flashcards' array c
       name: error.name,
       message: error.message,
       // Only include stack in development
-      stack: import.meta.env.DEV ? error.stack : undefined
+      stack: import.meta.env.DEV ? error.stack : undefined,
     };
 
-    logger.error('OpenRouter API error', sanitizedError, {
-      context: 'OpenRouterService',
+    logger.error("OpenRouter API error", sanitizedError, {
+      context: "OpenRouterService",
       data: {
         model: this.modelName,
         // Don't log the actual API key
-        hasApiKey: Boolean(this.apiKey)
-      }
+        hasApiKey: Boolean(this.apiKey),
+      },
     });
   }
 
   /**
    * Generates flashcards from the provided text
    */
-  public async generateFlashcards(inputText: string, numberOfCards: number = 5): Promise<FlashcardProposal[]> {
+  public async generateFlashcards(inputText: string, numberOfCards = 5): Promise<FlashcardProposal[]> {
     try {
       const userMessage = `Please create ${numberOfCards} flashcards from the following text:\n\n${inputText}`;
-      
-      logger.debug('Generating flashcards', {
-        context: 'OpenRouterService',
+
+      logger.debug("Generating flashcards", {
+        context: "OpenRouterService",
         data: {
           textLength: inputText.length,
-          requestedCards: numberOfCards
-        }
+          requestedCards: numberOfCards,
+        },
       });
 
       const response = await this.sendChatCompletion(userMessage);
-      
+
       if (!response.flashcards || !Array.isArray(response.flashcards)) {
-        throw new Error('Invalid response format: missing flashcards array');
+        throw new Error("Invalid response format: missing flashcards array");
       }
 
       // Ensure we don't exceed the requested number of cards
       const flashcards = response.flashcards.slice(0, numberOfCards);
 
-      logger.info('Successfully generated flashcards', {
-        context: 'OpenRouterService',
+      logger.info("Successfully generated flashcards", {
+        context: "OpenRouterService",
         data: {
           generatedCards: flashcards.length,
-          requestedCards: numberOfCards
-        }
+          requestedCards: numberOfCards,
+        },
       });
 
       return flashcards;
     } catch (error) {
-      this._logError(error instanceof Error ? error : new Error('Failed to generate flashcards'));
-      throw new Error('Failed to generate flashcards');
+      this._logError(error instanceof Error ? error : new Error("Failed to generate flashcards"));
+      throw new Error("Failed to generate flashcards");
     }
   }
-} 
+}

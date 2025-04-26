@@ -62,6 +62,7 @@ const userEmail = Astro.locals.user?.email;
         window.location.href = "/auth/login";
       } catch (error) {
         console.error("Logout failed:", error);
+        // eslint-disable-next-line prettier/prettier
       }
     });
   }
