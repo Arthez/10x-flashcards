@@ -9,15 +9,14 @@ import { TopNavigation } from "../page-objects/TopNavigation";
 // Load test environment variables
 dotenv.config({ path: ".env.test" });
 
-// Test suite
-test.describe("Full Generate Flow", () => {
+test.describe.serial("Full Generate Flow", () => {
   let loginPage: LoginPage;
   let learnPage: LearnPage;
   let browsePage: BrowsePage;
   let generatePage: GeneratePage;
   let topNav: TopNavigation;
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeAll(async ({ page }) => {
     loginPage = new LoginPage(page);
     learnPage = new LearnPage(page);
     browsePage = new BrowsePage(page);
@@ -25,8 +24,7 @@ test.describe("Full Generate Flow", () => {
     topNav = new TopNavigation(page);
   });
 
-  test("complete flashcard generation flow", async ({ page }) => {
-    // 1. Login
+  test("1. should login successfully", async ({ page }) => {
     await loginPage.goto();
     await expect(page).toHaveURL("/auth/login");
     const email = process.env.E2E_USERNAME;
@@ -38,14 +36,16 @@ test.describe("Full Generate Flow", () => {
 
     await loginPage.login(email, password);
     await expect(page).toHaveURL("/learn");
+  });
 
-    // 2. Check learn page
+  test("2. should check learn page", async () => {
     const createFlashcardButton = await learnPage.getCreateFlashcardButton();
     await expect(createFlashcardButton).toBeVisible();
     const initialFlashcards = await learnPage.getFlashcards();
     expect(initialFlashcards).toHaveLength(0);
+  });
 
-    // 3-4. Check browse page
+  test("3-4. should check browse page initial state", async ({ page }) => {
     await browsePage.goto();
     await expect(page).toHaveURL("/browse");
     const initialStats = await browsePage.getStatistics();
@@ -56,35 +56,41 @@ test.describe("Full Generate Flow", () => {
 
     const noFlashcardsMessage = await browsePage.getNoFlashcardsMessage();
     await expect(noFlashcardsMessage).toHaveText("No flashcards found. Create your first flashcard to get started!");
+  });
 
-    // 5-6. Go to generate page and check heading
+  test("5-6. should check generate page heading", async ({ page }) => {
     await generatePage.goto();
     await expect(page).toHaveURL("/generate");
     const heading = await generatePage.getHeading();
     await expect(heading).toHaveText("Generate Flashcards");
+  });
 
-    // 7-8. Check generate button state with short text
+  test("7-8. should check generate button state with short text", async () => {
     await generatePage.setInputText("some text");
     const generateButton = await generatePage.getGenerateButton();
     await expect(generateButton).toBeDisabled();
+  });
 
-    // 9-11. Generate flashcards with proper text
+  test("9-11. should generate flashcards with proper text", async () => {
     const tigerText = `Tygrys azjatycki, tygrys (Panthera tigris) – gatunek dużego, drapieżnego ssaka łożyskowego z podrodziny panter (Pantherinae) w rodzinie kotowatych (Felidae), największego ze współczesnych[a] pięciu gatunków dzikich kotów z rodzaju Panthera, jeden z największych drapieżników lądowych (wielkością ustępuje jedynie niektórym niedźwiedziom). Dorosłe samce osiągają ponad 300 kg masy ciała przy ponad 3 m całkowitej długości. Rekordowa masa ciała samca, z podgatunku tygrysa syberyjskiego, wynosi 423 kg. Dobrze skacze, bardzo dobrze pływa, poluje zwykle samotnie. Dawniej liczny w całej Azji, zawsze budzący grozę, stał się obiektem polowań dla sportu, pieniędzy lub prewencyjnej obrony (ludzi i zwierząt hodowlanych). Wytępiony w wielu regionach, zagrożony wyginięciem, został objęty programami ochrony. Największa dzika populacja żyje w Indiach (gdzie w niektórych regionach tygrysy są uważane za zwierzęta święte). Słowo "tygrys" pochodzi od greckiego wyrazu tigris, które z kolei ma najprawdopodobniej irańskie korzenie.`;
     await generatePage.setInputText(tigerText);
+    const generateButton = await generatePage.getGenerateButton();
     await generateButton.click();
 
     // Wait for flashcard proposals
     const proposals = await generatePage.waitForFlashcardProposals();
     expect(proposals).toHaveLength(5);
+  });
 
-    // 12. Edit and process flashcards
+  test("12. should edit and process flashcards", async () => {
     await generatePage.editFlashcardFront(0, "EDITED");
     await generatePage.acceptFlashcard(0);
     await generatePage.acceptFlashcard(1);
     await generatePage.acceptFlashcard(2);
     await generatePage.rejectFlashcard(3);
+  });
 
-    // 13-15. Check browse page statistics and flashcards
+  test("13-15. should check browse page statistics and flashcards", async ({ page }) => {
     await browsePage.goto();
     await expect(page).toHaveURL("/browse");
     const finalStats = await browsePage.getStatistics();
@@ -95,13 +101,15 @@ test.describe("Full Generate Flow", () => {
 
     const finalFlashcards = await browsePage.getFlashcards();
     expect(finalFlashcards).toHaveLength(3);
+  });
 
-    // 16. Filter by AI edited
+  test("16. should filter by AI edited", async () => {
     await browsePage.filterByAiEdited();
     const editedFlashcards = await browsePage.getFlashcards();
     expect(editedFlashcards).toHaveLength(1);
+  });
 
-    // 17-18. Logout and check login page
+  test("17-18. should logout and check login page", async ({ page }) => {
     await topNav.logout();
     await expect(page).toHaveURL("/auth/login");
   });
