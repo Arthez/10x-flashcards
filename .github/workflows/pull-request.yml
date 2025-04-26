@@ -114,6 +114,7 @@ jobs:
             const comment = `## Pull Request Status ${statusEmoji}\n\n` +
               `${statusText}\n\n` +
               `### Test Results:\n` +
+              `- Lint: ${lintSuccess ? '✅' : '❌'}\n` +
               `- Unit Tests: ${unitTestSuccess ? '✅' : '❌'}\n` +
               `- E2E Tests: ${e2eTestSuccess ? '✅' : '❌'}\n\n` +
               `Test reports have been uploaded as artifacts.`;
