@@ -1,32 +1,13 @@
 -- ---------------------------------------------------------------
 -- migration: initial_schema
 -- description: creates the initial database schema for 10x-flashcards
--- tables: users, flashcards, generations
+-- tables: flashcards, generations
 -- author: system
 -- date: 2025-04-15
 -- ---------------------------------------------------------------
 
 -- create custom types
 create type creation_method_enum as enum ('ai_full', 'ai_edited', 'manual');
-
--- create tables
-create table if not exists users (
-    id uuid primary key default uuid_generate_v4(),
-    email text unique not null,
-    created_at timestamp with time zone not null default now(),
-    updated_at timestamp with time zone not null default now()
-);
-
--- enable rls on users table
-alter table users enable row level security;
-
--- rls policies for users table
--- policy for authenticated users to select their own records
-comment on table users is 'Stores user profile information';
-create policy "users can view own profile" 
-    on users for select 
-    to authenticated 
-    using (id = auth.uid());
 
 -- flashcards table
 create table if not exists flashcards (
@@ -36,7 +17,7 @@ create table if not exists flashcards (
     creation_method creation_method_enum not null,
     created_at timestamp with time zone not null default now(),
     updated_at timestamp with time zone not null default now(),
-    user_id uuid not null references users(id) on delete cascade
+    user_id uuid not null references auth.users(id) on delete cascade
 );
 
 -- enable rls on flashcards table
@@ -79,7 +60,7 @@ create policy "anon cannot access flashcards"
 -- generations table
 create table if not exists generations (
     id uuid primary key default uuid_generate_v4(),
-    user_id uuid not null references users(id) on delete cascade,
+    user_id uuid not null references auth.users(id) on delete cascade,
     total_generated integer not null,
     accepted_full integer not null default 0,
     accepted_edited integer not null default 0,
@@ -157,19 +138,4 @@ execute function update_modified_column();
 create trigger update_generations_updated_at
 before update on generations
 for each row
-execute function update_modified_column();
-
--- automatic user profile creation upon signup
-create or replace function public.handle_new_user()
-returns trigger as $$
-begin
-    insert into public.users (id, email)
-    values (new.id, new.email);
-    return new;
-end;
-$$ language plpgsql security definer;
-
--- trigger for auth.users to create profile in public.users
-create trigger on_auth_user_created
-    after insert on auth.users
-    for each row execute function public.handle_new_user(); 
+execute function update_modified_column(); 
