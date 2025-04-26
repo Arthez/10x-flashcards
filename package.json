@@ -1,7 +1,7 @@
 {
   "name": "10x-flashcards",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Artur Ratowski",
   "description": "10x-Flashcards is a web application to help people learn by using AI generated flashcards. The goal of this project is to speed up creation time of flashcards which should provide an easier way to start using effective spaced repetition learning technique.",
   "scripts": {
