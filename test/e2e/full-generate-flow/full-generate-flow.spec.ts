@@ -36,19 +36,18 @@ test.describe.serial("Full Generate Flow", () => {
 
     await loginPage.login(email, password);
     await expect(page).toHaveURL("/learn");
-  });
 
-  test("2. should check learn page", async () => {
+    // 2. should check learn page
     const createFlashcardButton = await learnPage.getCreateFlashcardButton();
     await expect(createFlashcardButton).toBeVisible();
     const initialFlashcards = await learnPage.getFlashcards();
     expect(initialFlashcards).toHaveLength(0);
-  });
 
-  test("3-4. should check browse page initial state", async ({ page }) => {
+    // 3-4. should check browse page initial state
     await browsePage.goto();
     await expect(page).toHaveURL("/browse");
     const initialStats = await browsePage.getStatistics();
+    console.log("initialStats", initialStats);
     expect(initialStats.aiUnedited).toBe("0");
     expect(initialStats.aiEdited).toBe("0");
     expect(initialStats.manual).toBe("0");
@@ -56,41 +55,36 @@ test.describe.serial("Full Generate Flow", () => {
 
     const noFlashcardsMessage = await browsePage.getNoFlashcardsMessage();
     await expect(noFlashcardsMessage).toHaveText("No flashcards found. Create your first flashcard to get started!");
-  });
 
-  test("5-6. should check generate page heading", async ({ page }) => {
+    // 5-6. should check generate page heading
     await generatePage.goto();
     await expect(page).toHaveURL("/generate");
     const heading = await generatePage.getHeading();
     await expect(heading).toHaveText("Generate Flashcards");
-  });
 
-  test("7-8. should check generate button state with short text", async () => {
+    // 7-8. should check generate button state with short text
     await generatePage.setInputText("some text");
-    const generateButton = await generatePage.getGenerateButton();
-    await expect(generateButton).toBeDisabled();
-  });
+    const generateButton1 = await generatePage.getGenerateButton();
+    await expect(generateButton1).toBeDisabled();
 
-  test("9-11. should generate flashcards with proper text", async () => {
+    // 9-11. should generate flashcards with proper text
     const tigerText = `Tygrys azjatycki, tygrys (Panthera tigris) – gatunek dużego, drapieżnego ssaka łożyskowego z podrodziny panter (Pantherinae) w rodzinie kotowatych (Felidae), największego ze współczesnych[a] pięciu gatunków dzikich kotów z rodzaju Panthera, jeden z największych drapieżników lądowych (wielkością ustępuje jedynie niektórym niedźwiedziom). Dorosłe samce osiągają ponad 300 kg masy ciała przy ponad 3 m całkowitej długości. Rekordowa masa ciała samca, z podgatunku tygrysa syberyjskiego, wynosi 423 kg. Dobrze skacze, bardzo dobrze pływa, poluje zwykle samotnie. Dawniej liczny w całej Azji, zawsze budzący grozę, stał się obiektem polowań dla sportu, pieniędzy lub prewencyjnej obrony (ludzi i zwierząt hodowlanych). Wytępiony w wielu regionach, zagrożony wyginięciem, został objęty programami ochrony. Największa dzika populacja żyje w Indiach (gdzie w niektórych regionach tygrysy są uważane za zwierzęta święte). Słowo "tygrys" pochodzi od greckiego wyrazu tigris, które z kolei ma najprawdopodobniej irańskie korzenie.`;
     await generatePage.setInputText(tigerText);
-    const generateButton = await generatePage.getGenerateButton();
-    await generateButton.click();
+    const generateButton2 = await generatePage.getGenerateButton();
+    await generateButton2.click();
 
     // Wait for flashcard proposals
     const proposals = await generatePage.waitForFlashcardProposals();
     expect(proposals).toHaveLength(5);
-  });
 
-  test("12. should edit and process flashcards", async () => {
+    // 12. should edit and process flashcards
     await generatePage.editFlashcardFront(0, "EDITED");
     await generatePage.acceptFlashcard(0);
     await generatePage.acceptFlashcard(1);
     await generatePage.acceptFlashcard(2);
     await generatePage.rejectFlashcard(3);
-  });
 
-  test("13-15. should check browse page statistics and flashcards", async ({ page }) => {
+    // 13-15. should check browse page statistics and flashcards
     await browsePage.goto();
     await expect(page).toHaveURL("/browse");
     const finalStats = await browsePage.getStatistics();
@@ -101,15 +95,13 @@ test.describe.serial("Full Generate Flow", () => {
 
     const finalFlashcards = await browsePage.getFlashcards();
     expect(finalFlashcards).toHaveLength(3);
-  });
 
-  test("16. should filter by AI edited", async () => {
+    // 16. should filter by AI edited
     await browsePage.filterByAiEdited();
     const editedFlashcards = await browsePage.getFlashcards();
     expect(editedFlashcards).toHaveLength(1);
-  });
 
-  test("17-18. should logout and check login page", async ({ page }) => {
+    // 17-18. should logout and check login page", async ({ page }) => {
     await topNav.logout();
     await expect(page).toHaveURL("/auth/login");
   });

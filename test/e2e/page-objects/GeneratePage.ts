@@ -12,7 +12,7 @@ export class GeneratePage {
   }
 
   async setInputText(text: string) {
-    await this.page.getByTestId("generate-input").fill(text);
+    await this.page.getByTestId("generate-input-textarea").fill(text);
   }
 
   async getGenerateButton() {
@@ -20,24 +20,24 @@ export class GeneratePage {
   }
 
   async waitForFlashcardProposals() {
-    await this.page.waitForSelector('[data-testid="flashcard-proposal"]', { state: "visible" });
-    return this.page.getByTestId("flashcard-proposal").all();
+    await this.page.waitForSelector('[data-testid="card"]', { state: "visible" });
+    return this.page.getByTestId("card").all();
   }
 
   async editFlashcardFront(index: number, additionalText: string) {
-    const flashcard = (await this.page.getByTestId("flashcard-proposal").all())[index];
-    const frontContent = await flashcard.getByTestId("front-content");
+    const flashcard = (await this.page.getByTestId("card").all())[index];
+    const frontContent = await flashcard.getByTestId("flashcard-front-input");
     const currentText = await frontContent.inputValue();
     await frontContent.fill(currentText + additionalText);
   }
 
   async acceptFlashcard(index: number) {
-    const flashcard = (await this.page.getByTestId("flashcard-proposal").all())[index];
-    await flashcard.getByTestId("accept-button").click();
+    const flashcard = (await this.page.getByTestId("card").all())[index];
+    await flashcard.getByTestId("flashcard-accept").click();
   }
 
   async rejectFlashcard(index: number) {
-    const flashcard = (await this.page.getByTestId("flashcard-proposal").all())[index];
-    await flashcard.getByTestId("reject-button").click();
+    const flashcard = (await this.page.getByTestId("card").all())[index];
+    await flashcard.getByTestId("flashcard-reject").click();
   }
 }

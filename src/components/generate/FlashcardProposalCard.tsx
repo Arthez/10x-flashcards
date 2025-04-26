@@ -32,7 +32,7 @@ export function FlashcardProposalCard({ proposal, onAccept, onReject, onUpdate }
           onChange={(value) => onUpdate({ front_content: value })}
           error={errors?.front_content}
           disabled={isSaving}
-          data-testid={`flashcard-front-${proposal.id}`}
+          data-testid={`flashcard-front`}
         />
         <FlashcardEditorField
           label="Back"
@@ -40,7 +40,7 @@ export function FlashcardProposalCard({ proposal, onAccept, onReject, onUpdate }
           onChange={(value) => onUpdate({ back_content: value })}
           error={errors?.back_content}
           disabled={isSaving}
-          data-testid={`flashcard-back-${proposal.id}`}
+          data-testid={`flashcard-back`}
         />
       </CardContent>
       <CardFooter className="gap-2">
@@ -48,7 +48,7 @@ export function FlashcardProposalCard({ proposal, onAccept, onReject, onUpdate }
           onClick={onAccept}
           disabled={isSaving || Boolean(errors)}
           className="flex-1"
-          data-testid={`flashcard-accept-${proposal.id}`}
+          data-testid={`flashcard-accept`}
         >
           {isSaving ? "Saving..." : isEdited ? "Accept Edited" : "Accept"}
         </Button>
@@ -57,7 +57,7 @@ export function FlashcardProposalCard({ proposal, onAccept, onReject, onUpdate }
           onClick={onReject}
           disabled={isSaving}
           className="flex-1"
-          data-testid={`flashcard-reject-${proposal.id}`}
+          data-testid={`flashcard-reject`}
         >
           Reject
         </Button>

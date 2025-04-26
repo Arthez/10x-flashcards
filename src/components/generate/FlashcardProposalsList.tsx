@@ -36,7 +36,6 @@ export function FlashcardProposalsList({ proposals, onAccept, onReject, onUpdate
             onAccept={() => onAccept(proposal.id)}
             onReject={() => onReject(proposal.id)}
             onUpdate={(updates) => onUpdate(proposal.id, updates)}
-            data-testid={`flashcard-proposal-${proposal.id}`}
           />
         ))}
       </div>
