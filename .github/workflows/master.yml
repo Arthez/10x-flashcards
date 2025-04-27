@@ -72,18 +72,7 @@ jobs:
           
       - name: Install dependencies
         run: npm ci
-
-      - name: Debug Cloudflare Account & Projects
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: |
-          echo "→ Cloudflare Account ID (masked): $CLOUDFLARE_ACCOUNT_ID"
-          npx wrangler whoami --api-token="$CLOUDFLARE_API_TOKEN"
-          npx wrangler pages project list \
-            --account-id="$CLOUDFLARE_ACCOUNT_ID" \
-            --api-token="$CLOUDFLARE_API_TOKEN"
-        
+ 
       - name: Build project
         run: npm run build
         
@@ -95,7 +84,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=10x-flashcards --branch=main
+          command: pages deploy dist --project-name=10x-flashcards
 
   deployment-status:
     name: Update Deployment Status
