@@ -5,8 +5,9 @@ dist/
 node_modules/
 
 # environment variables
+.env
 .env.dev
-.env.production
+.env.prod
 .env.test
 
 # macOS-specific files
