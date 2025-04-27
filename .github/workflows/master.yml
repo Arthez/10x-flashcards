@@ -75,14 +75,14 @@ jobs:
 
       - name: Debug Cloudflare Account & Projects
         env:
-          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          echo "→ Cloudflare Account ID (masked): $CF_ACCOUNT_ID"
-          npx wrangler whoami --api-token="$CF_API_TOKEN"
+          echo "→ Cloudflare Account ID (masked): $CLOUDFLARE_ACCOUNT_ID"
+          npx wrangler whoami --api-token="$CLOUDFLARE_API_TOKEN"
           npx wrangler pages project list \
-            --account-id="$CF_ACCOUNT_ID" \
-            --api-token="$CF_API_TOKEN"
+            --account-id="$CLOUDFLARE_ACCOUNT_ID" \
+            --api-token="$CLOUDFLARE_API_TOKEN"
         
       - name: Build project
         run: npm run build
