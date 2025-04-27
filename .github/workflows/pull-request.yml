@@ -1,4 +1,4 @@
-name: Pull Request Checksto main
+name: Pull Request Checks to main
 
 on:
   pull_request:
