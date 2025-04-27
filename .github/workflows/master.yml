@@ -76,9 +76,6 @@ jobs:
       - name: Build project
         run: npm run build
         
-      - name: List dist directory
-        run: ls -la dist
-        
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
