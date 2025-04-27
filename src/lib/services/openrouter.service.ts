@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { FlashcardProposalDTO } from "@/types";
-import { OPENROUTER_API_KEY } from "astro:env/server";
+import { getSecret } from "astro:env/server";
 import { logger } from "../../lib/logger";
 
 // Types for model parameters and responses
@@ -111,7 +111,7 @@ IMPORTANT: Your response must be a valid JSON object with a 'flashcards' array c
 
   constructor(config?: Partial<OpenRouterConfig>) {
     // Initialize configuration variables with optional overrides
-    this.apiKey = config?.apiKey ?? OPENROUTER_API_KEY;
+    this.apiKey = config?.apiKey ?? (getSecret("OPENROUTER_API_KEY") as string);
     this.baseURL = config?.baseURL ?? "https://openrouter.ai/api/v1";
     this.modelName = config?.modelName ?? "openai/gpt-4o-mini";
     // this.modelName = config?.modelName ?? 'deepseek/deepseek-v3-base:free';
