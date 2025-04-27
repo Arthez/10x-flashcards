@@ -22,6 +22,7 @@
     "test:e2e:manual": "playwright test --config=test/manual-e2e.config.ts --ui"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "^12.5.1",
     "@astrojs/node": "^9.1.3",
     "@astrojs/react": "4.2.2",
     "@astrojs/sitemap": "3.3.0",
