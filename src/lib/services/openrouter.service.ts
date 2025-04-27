@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { FlashcardProposalDTO } from "@/types";
+import { OPENROUTER_API_KEY } from "astro:env/server";
 import { logger } from "../../lib/logger";
 
 // Types for model parameters and responses
@@ -110,7 +111,7 @@ IMPORTANT: Your response must be a valid JSON object with a 'flashcards' array c
 
   constructor(config?: Partial<OpenRouterConfig>) {
     // Initialize configuration variables with optional overrides
-    this.apiKey = config?.apiKey ?? import.meta.env.OPENROUTER_API_KEY;
+    this.apiKey = config?.apiKey ?? OPENROUTER_API_KEY;
     this.baseURL = config?.baseURL ?? "https://openrouter.ai/api/v1";
     this.modelName = config?.modelName ?? "openai/gpt-4o-mini";
     // this.modelName = config?.modelName ?? 'deepseek/deepseek-v3-base:free';
@@ -142,7 +143,6 @@ IMPORTANT: Your response must be a valid JSON object with a 'flashcards' array c
   public async sendChatCompletion(userMessage: string, context?: object): Promise<FlashcardResponse> {
     try {
       const payload = this._buildPayload(userMessage, context);
-      console.log("--------------- PAYLOAD", payload);
 
       logger.debug("Sending chat completion request", {
         context: "OpenRouterService",
@@ -342,8 +342,7 @@ IMPORTANT: Your response must be a valid JSON object with a 'flashcards' array c
     const sanitizedError = {
       name: error.name,
       message: error.message,
-      // Only include stack in development
-      stack: import.meta.env.DEV ? error.stack : undefined,
+      stack: error.stack,
     };
 
     logger.error("OpenRouter API error", sanitizedError, {
