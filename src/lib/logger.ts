@@ -1,4 +1,4 @@
-const isDevelopment = import.meta.env.DEV;
+const showLogs = true;
 
 interface LogOptions {
   context?: string;
@@ -16,25 +16,25 @@ function formatMessage(message: string, options?: LogOptions): string {
 
 export const logger = {
   info(message: string, options?: LogOptions) {
-    if (isDevelopment) {
+    if (showLogs) {
       console.info(formatMessage(message, options), options?.data ? options.data : "");
     }
   },
 
   error(message: string, error?: Error | unknown, options?: LogOptions) {
-    if (isDevelopment) {
+    if (showLogs) {
       console.error(formatMessage(message, options), error || "", options?.data ? options.data : "");
     }
   },
 
   warn(message: string, options?: LogOptions) {
-    if (isDevelopment) {
+    if (showLogs) {
       console.warn(formatMessage(message, options), options?.data ? options.data : "");
     }
   },
 
   debug(message: string, options?: LogOptions) {
-    if (isDevelopment) {
+    if (showLogs) {
       console.debug(formatMessage(message, options), options?.data ? options.data : "");
     }
   },
