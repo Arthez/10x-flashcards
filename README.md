@@ -35,7 +35,7 @@ A web application that accelerates learning through AI-generated flashcards and 
 
 ### CI/CD & Hosting
 - [GitHub Actions](https://github.com/features/actions) - CI/CD automation
-- [DigitalOcean](https://www.digitalocean.com/) - Cloud hosting via Docker
+- [Cloudflare](https://pages.cloudflare.com/) - JAMstack platform for frontend developers to collaborate and deploy websites
 
 ## Dependencies
 
