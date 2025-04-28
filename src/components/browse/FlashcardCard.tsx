@@ -150,11 +150,11 @@ const FlashcardCard = ({ flashcard, onEdit, onDelete }: FlashcardCardProps) => {
           <>
             <div className="space-y-2">
               <span className="text-sm font-medium block">Front side</span>
-              <p className="break-all">{flashcard.front_content}</p>
+              <p className="break-word">{flashcard.front_content}</p>
             </div>
             <div className="space-y-2">
               <span className="text-sm font-medium block">Back side</span>
-              <p className="break-all">{flashcard.back_content}</p>
+              <p className="break-word">{flashcard.back_content}</p>
             </div>
           </>
         )}

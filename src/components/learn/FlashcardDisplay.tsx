@@ -28,12 +28,12 @@ export function FlashcardDisplay({ flashcard, isFlipped, onFlip }: FlashcardDisp
       >
         {/* Front of card */}
         <Card className="absolute w-full min-h-[200px] p-6 flex items-center justify-center text-center cursor-pointer select-none backface-hidden">
-          <p className="text-xl break-all">{flashcard.front_content}</p>
+          <p className="text-xl break-word">{flashcard.front_content}</p>
         </Card>
 
         {/* Back of card */}
         <Card className="absolute w-full min-h-[200px] p-6 flex items-center justify-center text-center cursor-pointer select-none backface-hidden rotate-y-180">
-          <p className="text-xl break-all">{flashcard.back_content}</p>
+          <p className="text-xl break-word">{flashcard.back_content}</p>
         </Card>
       </div>
     </div>
