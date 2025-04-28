@@ -9,17 +9,25 @@ import { SessionEndMessage } from "./SessionEndMessage";
 import { FocusContainer } from "./FocusContainer";
 import { KeyboardShortcutsHelp } from "./KeyboardShortcutsHelp";
 import { logger } from "../../lib/logger";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function LearnContainer() {
   const { state, drawFlashcard, flipCard, resetSession } = useLearnSession();
+  const [isDrawingNewCard, setIsDrawingNewCard] = useState(false);
 
   useLearnKeyboardShortcuts({
     onFlip: flipCard,
-    onNext: drawFlashcard,
+    onNext: () => handleDrawCard(),
     onRestart: resetSession,
     isActive: !state.isLoading && state.flashcards.length > 0,
   });
+
+  const handleDrawCard = () => {
+    setIsDrawingNewCard(true);
+    drawFlashcard();
+    // Reset the flag after a short delay to re-enable animations for flipping
+    setTimeout(() => setIsDrawingNewCard(false), 100);
+  };
 
   // Log important state changes in development
   useEffect(() => {
@@ -94,14 +102,19 @@ export default function LearnContainer() {
           <div className="space-y-6">
             <div className="flex gap-4 justify-center mb-4">
               <FlipCardButton onFlip={flipCard} disabled={false} />
-              <DrawFlashcardButton onDraw={drawFlashcard} disabled={state.availableFlashcards.length === 0} />
+              <DrawFlashcardButton onDraw={handleDrawCard} disabled={state.availableFlashcards.length === 0} />
             </div>
-            <FlashcardDisplay flashcard={state.currentFlashcard} isFlipped={state.isFlipped} onFlip={flipCard} />
+            <FlashcardDisplay
+              flashcard={state.currentFlashcard}
+              isFlipped={state.isFlipped}
+              onFlip={flipCard}
+              enableAnimation={!isDrawingNewCard}
+            />
           </div>
         </FocusContainer>
       ) : (
         <FocusContainer isActive={true} description="Draw flashcard section">
-          <DrawFlashcardButton onDraw={drawFlashcard} disabled={false} isLarge />
+          <DrawFlashcardButton onDraw={handleDrawCard} disabled={false} isLarge />
         </FocusContainer>
       )}
     </div>

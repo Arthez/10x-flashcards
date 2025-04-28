@@ -5,9 +5,10 @@ interface FlashcardDisplayProps {
   flashcard: FlashcardDTO;
   isFlipped: boolean;
   onFlip: () => void;
+  enableAnimation?: boolean;
 }
 
-export function FlashcardDisplay({ flashcard, isFlipped, onFlip }: FlashcardDisplayProps) {
+export function FlashcardDisplay({ flashcard, isFlipped, onFlip, enableAnimation = true }: FlashcardDisplayProps) {
   return (
     <div
       className="w-full max-w-[500px] min-h-[200px] perspective-1000"
@@ -24,7 +25,9 @@ export function FlashcardDisplay({ flashcard, isFlipped, onFlip }: FlashcardDisp
       data-testid="flashcard-display"
     >
       <div
-        className={`relative w-full h-full transition-transform duration-500 preserve-3d ${isFlipped ? "rotate-y-180" : ""}`}
+        className={`relative w-full h-full preserve-3d ${
+          enableAnimation ? "transition-transform duration-500" : ""
+        } ${isFlipped ? "rotate-y-180" : ""}`}
       >
         {/* Front of card */}
         <Card className="absolute w-full min-h-[200px] p-6 flex items-center justify-center text-center cursor-pointer select-none backface-hidden">
