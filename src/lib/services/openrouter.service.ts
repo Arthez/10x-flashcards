@@ -111,7 +111,7 @@ IMPORTANT: Your response must be a valid JSON object with a 'flashcards' array c
 
   constructor(config?: Partial<OpenRouterConfig>) {
     // Initialize configuration variables with optional overrides
-    this.apiKey = config?.apiKey || import.meta?.env?.OPENROUTER_API_KEY || OPENROUTER_API_KEY;
+    this.apiKey = config?.apiKey || OPENROUTER_API_KEY;
     this.baseURL = config?.baseURL ?? "https://openrouter.ai/api/v1";
     this.modelName = config?.modelName ?? "openai/gpt-4o-mini";
     // this.modelName = config?.modelName ?? 'deepseek/deepseek-v3-base:free';
