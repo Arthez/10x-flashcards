@@ -28,6 +28,8 @@ class FlashcardService {
             );
           case "INTERNAL_ERROR":
             throw new Error("Server error. Please try again later.");
+          case "NETWORK_ERROR":
+            throw new Error("Network error. Please check your network and try again later.");
           default:
             throw new Error(errorMessage);
         }
